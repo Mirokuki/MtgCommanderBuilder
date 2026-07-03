@@ -82,3 +82,4 @@ C:\Users\rsuff\OneDrive\Documents\MtgCommanderBuilder-Wild\obj\Release\net9.0-wi
 C:\Users\rsuff\OneDrive\Documents\MtgCommanderBuilder-Wild\obj\Release\net9.0-windows10.0.19041.0\Views\ManaDesignerWindow.baml
 C:\Users\rsuff\OneDrive\Documents\MtgCommanderBuilder-Wild\obj\Release\net9.0-windows10.0.19041.0\Views\RecommendationsWindow.g.cs
 C:\Users\rsuff\OneDrive\Documents\MtgCommanderBuilder-Wild\obj\Release\net9.0-windows10.0.19041.0\Views\RecommendationsWindow.baml
+C:\Users\rsuff\OneDrive\Documents\MtgCommanderBuilder-Wild\obj\Release\net9.0-windows10.0.19041.0\MtgCommanderBuilder.sourcelink.json
