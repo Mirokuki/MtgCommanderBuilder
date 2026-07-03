@@ -1,0 +1,5 @@
+- `[x]` Update MainWindow.xaml to add CardZoomSlider and apply ScaleTransform to the Card Spoiler ListBox template
+- `[x]` Update MainViewModel.cs to add a confirmation prompt to DeleteDeck and implement DeleteUnusedEdhrecCache logic
+- `[x]` Compile and verify the build
+- `[x]` Document the changes in walkthrough.md
+- `[x]` Wire ContextButton_Click handler to open context menu on left-click

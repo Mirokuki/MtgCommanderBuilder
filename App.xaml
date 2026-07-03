@@ -1,0 +1,78 @@
+<Application x:Class="MtgCommanderBuilder.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:MtgCommanderBuilder"
+             xmlns:views="clr-namespace:MtgCommanderBuilder.Views"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Resources/Theme/Dark.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Resources/Wpf.Ui.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Value Converters -->
+            <views:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            <views:CardDeckStatusConverter x:Key="CardDeckStatusConverter" />
+            <views:BooleanInverter x:Key="BooleanInverter" />
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <views:StringEqualToVisibilityConverter x:Key="StringEqualToVisibilityConverter" />
+            <views:SubtractOneConverter x:Key="SubtractOneConverter" />
+
+            <!-- Curated Harminous obsidian colors -->
+            <SolidColorBrush x:Key="ObsidianBackgroundBrush" Color="#0d0e12" />
+            <SolidColorBrush x:Key="ObsidianGlassBrush" Color="#1b1c24" />
+            <SolidColorBrush x:Key="ObsidianBorderBrush" Color="#303240" />
+            <SolidColorBrush x:Key="AccentGoldBrush" Color="#caa13e" />
+            <SolidColorBrush x:Key="TextMutedBrush" Color="#8c949b" />
+
+            <!-- Dynamic Color Identity Glow Brushes for MTG -->
+            <SolidColorBrush x:Key="MtgWhiteGlow" Color="#f9faf4" />
+            <SolidColorBrush x:Key="MtgBlueGlow" Color="#0e68ab" />
+            <SolidColorBrush x:Key="MtgBlackGlow" Color="#692ab0" /> <!-- Enhanced purple-shadow for black cards -->
+            <SolidColorBrush x:Key="MtgRedGlow" Color="#d3202a" />
+            <SolidColorBrush x:Key="MtgGreenGlow" Color="#00733e" />
+            <SolidColorBrush x:Key="MtgGoldGlow" Color="#caa13e" />
+            <SolidColorBrush x:Key="MtgColorlessGlow" Color="#8c949b" />
+
+            <!-- Frosted Glass Card Panel -->
+            <Style x:Key="ObsidianGlassPanel" TargetType="Border">
+                <Setter Property="Background" Value="#17181f" />
+                <Setter Property="BorderBrush" Value="#2d2f3d" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="Padding" Value="16" />
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect BlurRadius="15" ShadowDepth="2" Direction="270" Opacity="0.4" Color="#000000" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Custom ScrollBar Styling for sleek UI -->
+            <Style TargetType="{x:Type ScrollBar}">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Width" Value="8"/>
+                <Setter Property="MinWidth" Value="8"/>
+            </Style>
+
+            <!-- Card item in list/grid view -->
+            <Style x:Key="MtgCardBorder" TargetType="Border">
+                <Setter Property="Background" Value="#1e202a" />
+                <Setter Property="BorderBrush" Value="#2c2e3c" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="Padding" Value="8" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#262837" />
+                        <Setter Property="BorderBrush" Value="#caa13e" />
+                        <Setter Property="Cursor" Value="Hand" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

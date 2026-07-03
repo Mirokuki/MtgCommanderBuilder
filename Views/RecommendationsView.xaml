@@ -1,0 +1,167 @@
+<UserControl x:Class="MtgCommanderBuilder.Views.RecommendationsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MtgCommanderBuilder.Views"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="900">
+
+    <Border Background="#0d0e12" Padding="24">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.2*"/> <!-- Left: Featured card & insights -->
+                <ColumnDefinition Width="1.5*"/> <!-- Right: Upgrade suggestions list -->
+            </Grid.ColumnDefinitions>
+
+            <!-- LEFT COLUMN: SYNERGY FOCUS -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>    <!-- Featured Synergy Card -->
+                    <RowDefinition Height="Auto"/> <!-- Insight Badges -->
+                </Grid.RowDefinitions>
+
+                <!-- Featured Card Crop -->
+                <Border Grid.Row="0" Style="{StaticResource ObsidianGlassPanel}" Margin="8" Padding="20">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                            <TextBlock Text="FEATURED SYNERGY" FontSize="11" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}"/>
+                            <TextBlock Text="Top card recommended for your commander theme" FontSize="10" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,0"/>
+                        </StackPanel>
+
+                        <!-- Static Mockup representation of The Prismatic Bridge -->
+                        <Border Grid.Row="1" CornerRadius="8" ClipToBounds="True" Background="#0b0c10" Height="240" VerticalAlignment="Center">
+                            <Grid>
+                                <!-- Beautiful gradient backing mimicking card art -->
+                                <Border>
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#bf80ff" Offset="0"/>
+                                            <GradientStop Color="#00e6e6" Offset="0.5"/>
+                                            <GradientStop Color="#ffb366" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                                
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="16">
+                                    <TextBlock Text="&#xE9F9;" FontFamily="Segoe MDL2 Assets" FontSize="42" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                                    <TextBlock Text="The Prismatic Bridge" FontSize="18" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Legendary Enchantment" FontSize="11" Foreground="#eee" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <StackPanel Grid.Row="2" Margin="0,16,0,0">
+                            <TextBlock Text="Synergy Score: 98%" FontSize="13" FontWeight="Bold" Foreground="#2ecc71" Margin="0,0,0,4"/>
+                            <TextBlock Text="Matches 8 different enchantment and tribal synergy triggers in your deck list." FontSize="11" Foreground="{StaticResource TextMutedBrush}" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Insights List -->
+                <Border Grid.Row="1" Style="{StaticResource ObsidianGlassPanel}" Margin="8" Padding="16">
+                    <StackPanel>
+                        <TextBlock Text="DECK INSIGHTS" FontSize="11" FontWeight="Bold" Foreground="White" Margin="0,0,0,12"/>
+                        
+                        <!-- Badges -->
+                        <WrapPanel>
+                            <Border Background="#1cff0000" BorderBrush="Red" BorderThickness="1" CornerRadius="12" Padding="10,4" Margin="4">
+                                <TextBlock Text="High Mana Value (Needs Ramp)" FontSize="10" Foreground="Red" FontWeight="SemiBold"/>
+                            </Border>
+                            <Border Background="#1600ff00" BorderBrush="Green" BorderThickness="1" CornerRadius="12" Padding="10,4" Margin="4">
+                                <TextBlock Text="Tribal Synergy: Excellent" FontSize="10" Foreground="Green" FontWeight="SemiBold"/>
+                            </Border>
+                            <Border Background="#10ffffff" BorderBrush="#2c2e3c" BorderThickness="1" CornerRadius="12" Padding="10,4" Margin="4">
+                                <TextBlock Text="Perfect Land Ratio" FontSize="10" Foreground="White" FontWeight="SemiBold"/>
+                            </Border>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- RIGHT COLUMN: UPGRADE SUGGESTIONS -->
+            <Border Grid.Column="1" Style="{StaticResource ObsidianGlassPanel}" Margin="8" Padding="20">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                        <TextBlock Text="RECOMMENDED UPGRADES" FontSize="14" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="Upgrade suggestions based on card performance databases" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <!-- Scrollable upgrades list -->
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <!-- Card Upgrade 1 -->
+                            <Border Background="#121319" BorderBrush="#2c2e3c" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,12">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Mystic Remora" FontSize="13" FontWeight="Bold" Foreground="White"/>
+                                        <TextBlock Text="Replace: Divination" FontSize="10" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,4"/>
+                                        <TextBlock Text="Provides massive card draw for 1 mana." FontSize="11" Foreground="{StaticResource TextMutedBrush}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12,0,0,0">
+                                        <TextBlock Text="$8.50" FontSize="14" FontWeight="Bold" Foreground="#4caf50" HorizontalAlignment="Right"/>
+                                        <Button Content="Add to Deck" Tag="Mystic Remora" Click="AddCard_Click" Background="#5c2bb0" Foreground="White" BorderThickness="0" Margin="0,6,0,0" Padding="10,6" FontSize="11"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Card Upgrade 2 -->
+                            <Border Background="#121319" BorderBrush="#2c2e3c" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,12">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Cyclonic Rift" FontSize="13" FontWeight="Bold" Foreground="White"/>
+                                        <TextBlock Text="Replace: Aether Spouts" FontSize="10" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,4"/>
+                                        <TextBlock Text="Overloaded board wipe that is one-sided." FontSize="11" Foreground="{StaticResource TextMutedBrush}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12,0,0,0">
+                                        <TextBlock Text="$32.00" FontSize="14" FontWeight="Bold" Foreground="#4caf50" HorizontalAlignment="Right"/>
+                                        <Button Content="Add to Deck" Tag="Cyclonic Rift" Click="AddCard_Click" Background="#5c2bb0" Foreground="White" BorderThickness="0" Margin="0,6,0,0" Padding="10,6" FontSize="11"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Card Upgrade 3 -->
+                            <Border Background="#121319" BorderBrush="#2c2e3c" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,12">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Rhystic Study" FontSize="13" FontWeight="Bold" Foreground="White"/>
+                                        <TextBlock Text="Replace: Cancel" FontSize="10" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,4"/>
+                                        <TextBlock Text="Draw card tax for each spell cast by opponents." FontSize="11" Foreground="{StaticResource TextMutedBrush}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12,0,0,0">
+                                        <TextBlock Text="$42.50" FontSize="14" FontWeight="Bold" Foreground="#4caf50" HorizontalAlignment="Right"/>
+                                        <Button Content="Add to Deck" Tag="Rhystic Study" Click="AddCard_Click" Background="#5c2bb0" Foreground="White" BorderThickness="0" Margin="0,6,0,0" Padding="10,6" FontSize="11"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

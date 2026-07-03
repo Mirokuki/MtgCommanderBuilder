@@ -1,0 +1,68 @@
+<UserControl x:Class="MtgCommanderBuilder.Views.CardImagePresenter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="200">
+
+    <Grid x:Name="RootGrid" Background="Transparent" RenderTransformOrigin="0.5,0.5">
+        <Grid.RenderTransform>
+            <ScaleTransform ScaleX="1.0" ScaleY="1.0" />
+        </Grid.RenderTransform>
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Trigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1.08" Duration="0:0:0.15"/>
+                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1.08" Duration="0:0:0.15"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.EnterActions>
+                        <Trigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1.0" Duration="0:0:0.15"/>
+                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1.0" Duration="0:0:0.15"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.ExitActions>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
+        <Image Name="ImgPresenter" Stretch="{Binding Stretch, RelativeSource={RelativeSource AncestorType=UserControl}}" RenderOptions.BitmapScalingMode="HighQuality">
+            <Image.Style>
+                <Style TargetType="Image">
+                    <Setter Property="Opacity" Value="0"/>
+                    <Style.Triggers>
+                        <!-- Smooth fade-in when source loads -->
+                        <Trigger Property="HasAnimatedProperties" Value="False">
+                            <!-- Standard triggers or simple fade in code-behind -->
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
+        </Image>
+
+        <!-- Loading Ring Overlay -->
+        <Grid Name="LoadingOverlay" Visibility="Collapsed" Background="#aa0d0e12">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ProgressBar IsIndeterminate="True" Width="80" Height="4" Foreground="{StaticResource AccentGoldBrush}" Background="#222" BorderThickness="0" Margin="0,0,0,8"/>
+                <TextBlock Text="Loading art..." FontSize="11" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Placeholder if no image is available -->
+        <Grid Name="PlaceholderOverlay" Visibility="Collapsed">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12">
+                <TextBlock Text="&#xE8B9;" FontFamily="Segoe MDL2 Assets" FontSize="36" Foreground="#303240" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                <TextBlock Text="Card Art Unavailable" FontSize="11" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

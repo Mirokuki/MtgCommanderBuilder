@@ -1,0 +1,273 @@
+<UserControl x:Class="MtgCommanderBuilder.Views.AnalyticsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MtgCommanderBuilder.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="900">
+    
+    <Border Background="#0d0e12" Padding="24">
+        <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/> <!-- Left: Type distribution -->
+            <ColumnDefinition Width="1.2*"/> <!-- Center: Mana Curve -->
+            <ColumnDefinition Width="1*"/> <!-- Right: Function Coverage -->
+        </Grid.ColumnDefinitions>
+
+        <!-- COLUMN 0: CARD TYPE DISTRIBUTION -->
+        <Border Grid.Column="0" Style="{StaticResource ObsidianGlassPanel}" Margin="8" Padding="16">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                    <TextBlock Text="CARD TYPE BREAKDOWN" FontSize="11" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}"/>
+                    <TextBlock Text="Ratios &amp; distribution of permanent and spell types" FontSize="10" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,0"/>
+                </StackPanel>
+
+                <!-- Type list -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <!-- Lands -->
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Grid.Column="0" Width="10" Height="10" Fill="#2ecc71" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <TextBlock Grid.Column="1" Text="Lands" Foreground="White" VerticalAlignment="Center" FontSize="13"/>
+                            <TextBlock Grid.Column="2" Text="{Binding LandsCount}" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" FontSize="13"/>
+                        </Grid>
+                        
+                        <!-- Creatures -->
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Grid.Column="0" Width="10" Height="10" Fill="#e67e22" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <TextBlock Grid.Column="1" Text="Creatures" Foreground="White" VerticalAlignment="Center" FontSize="13"/>
+                            <TextBlock Grid.Column="2" Text="{Binding CreaturesCount}" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" FontSize="13"/>
+                        </Grid>
+
+                        <!-- Artifacts -->
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Grid.Column="0" Width="10" Height="10" Fill="#95a5a6" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <TextBlock Grid.Column="1" Text="Artifacts" Foreground="White" VerticalAlignment="Center" FontSize="13"/>
+                            <TextBlock Grid.Column="2" Text="{Binding ArtifactsCount}" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" FontSize="13"/>
+                        </Grid>
+
+                        <!-- Enchantments -->
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Grid.Column="0" Width="10" Height="10" Fill="#9b59b6" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <TextBlock Grid.Column="1" Text="Enchantments" Foreground="White" VerticalAlignment="Center" FontSize="13"/>
+                            <TextBlock Grid.Column="2" Text="{Binding EnchantmentsCount}" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" FontSize="13"/>
+                        </Grid>
+
+                        <!-- Instants -->
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Grid.Column="0" Width="10" Height="10" Fill="#3498db" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <TextBlock Grid.Column="1" Text="Instants" Foreground="White" VerticalAlignment="Center" FontSize="13"/>
+                            <TextBlock Grid.Column="2" Text="{Binding InstantsCount}" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" FontSize="13"/>
+                        </Grid>
+
+                        <!-- Sorceries -->
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Grid.Column="0" Width="10" Height="10" Fill="#e74c3c" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <TextBlock Grid.Column="1" Text="Sorceries" Foreground="White" VerticalAlignment="Center" FontSize="13"/>
+                            <TextBlock Grid.Column="2" Text="{Binding SorceriesCount}" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" FontSize="13"/>
+                        </Grid>
+
+                        <!-- Planeswalkers -->
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Grid.Column="0" Width="10" Height="10" Fill="#f1c40f" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <TextBlock Grid.Column="1" Text="Planeswalkers" Foreground="White" VerticalAlignment="Center" FontSize="13"/>
+                            <TextBlock Grid.Column="2" Text="{Binding PlaneswalkersCount}" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" FontSize="13"/>
+                        </Grid>
+
+                        <Separator Background="#2c2e3c" Margin="0,16"/>
+
+                        <!-- Average Mana Value -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Average Mana Value" Foreground="{StaticResource TextMutedBrush}" FontSize="12"/>
+                            <TextBlock Grid.Column="1" Text="{Binding AverageManaValue, StringFormat='{}{0:F2}'}" Foreground="White" FontWeight="Bold" FontSize="14"/>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <!-- COLUMN 1: MANA VALUE CURVE -->
+        <Border Grid.Column="1" Style="{StaticResource ObsidianGlassPanel}" Margin="8" Padding="16">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                    <TextBlock Text="MANA VALUE CURVE" FontSize="11" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}"/>
+                    <TextBlock Text="Spells distributed by casting cost" FontSize="10" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,0"/>
+                </StackPanel>
+
+                <!-- Mana Curve UniformGrid containing bars -->
+                <Grid Grid.Row="1" Margin="0,16,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <UniformGrid Grid.Row="0" Columns="8" Rows="1" VerticalAlignment="Bottom" Height="220">
+                        <!-- CMC 0 -->
+                        <local:CurveBar ValueCount="0" MaxCount="{Binding MaxCmcCount}" Title="0" VerticalAlignment="Bottom"/>
+                        <!-- CMC 1 -->
+                        <local:CurveBar ValueCount="1" MaxCount="{Binding MaxCmcCount}" Title="1" VerticalAlignment="Bottom"/>
+                        <!-- CMC 2 -->
+                        <local:CurveBar ValueCount="2" MaxCount="{Binding MaxCmcCount}" Title="2" VerticalAlignment="Bottom"/>
+                        <!-- CMC 3 -->
+                        <local:CurveBar ValueCount="3" MaxCount="{Binding MaxCmcCount}" Title="3" VerticalAlignment="Bottom"/>
+                        <!-- CMC 4 -->
+                        <local:CurveBar ValueCount="4" MaxCount="{Binding MaxCmcCount}" Title="4" VerticalAlignment="Bottom"/>
+                        <!-- CMC 5 -->
+                        <local:CurveBar ValueCount="5" MaxCount="{Binding MaxCmcCount}" Title="5" VerticalAlignment="Bottom"/>
+                        <!-- CMC 6 -->
+                        <local:CurveBar ValueCount="6" MaxCount="{Binding MaxCmcCount}" Title="6" VerticalAlignment="Bottom"/>
+                        <!-- CMC 7+ -->
+                        <local:CurveBar ValueCount="7" MaxCount="{Binding MaxCmcCount}" Title="7+" VerticalAlignment="Bottom"/>
+                    </UniformGrid>
+                    
+                    <UniformGrid Grid.Row="1" Columns="8" Rows="1" Margin="0,8,0,0">
+                        <TextBlock Text="0" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Text="1" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Text="2" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Text="3" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Text="4" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Text="5" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Text="6" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="10"/>
+                        <TextBlock Text="7+" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="10"/>
+                    </UniformGrid>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- COLUMN 2: FUNCTION COVERAGE -->
+        <Border Grid.Column="2" Style="{StaticResource ObsidianGlassPanel}" Margin="8" Padding="16">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                    <TextBlock Text="FUNCTION COVERAGE" FontSize="11" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}"/>
+                    <TextBlock Text="Target goals vs. current counts for key roles" FontSize="10" Foreground="{StaticResource TextMutedBrush}" Margin="0,2,0,0"/>
+                </StackPanel>
+
+                <!-- Role Bars -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <!-- Ramp -->
+                        <StackPanel Margin="0,10">
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Ramp" Foreground="White" FontSize="12" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Text="{Binding RampCount, StringFormat='{}{0} / 10'}" Foreground="{StaticResource TextMutedBrush}" FontSize="12"/>
+                            </Grid>
+                            <ProgressBar Value="{Binding RampCount}" Minimum="0" Maximum="10" Height="8" Foreground="#2ecc71" Background="#1a1b24" BorderThickness="0"/>
+                        </StackPanel>
+
+                        <!-- Card Draw -->
+                        <StackPanel Margin="0,10">
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Card Draw" Foreground="White" FontSize="12" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Text="{Binding DrawCount, StringFormat='{}{0} / 10'}" Foreground="{StaticResource TextMutedBrush}" FontSize="12"/>
+                            </Grid>
+                            <ProgressBar Value="{Binding DrawCount}" Minimum="0" Maximum="10" Height="8" Foreground="#3498db" Background="#1a1b24" BorderThickness="0"/>
+                        </StackPanel>
+
+                        <!-- Spot Removal -->
+                        <StackPanel Margin="0,10">
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Spot Removal" Foreground="White" FontSize="12" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Text="{Binding RemovalCount, StringFormat='{}{0} / 10'}" Foreground="{StaticResource TextMutedBrush}" FontSize="12"/>
+                            </Grid>
+                            <ProgressBar Value="{Binding RemovalCount}" Minimum="0" Maximum="10" Height="8" Foreground="#e74c3c" Background="#1a1b24" BorderThickness="0"/>
+                        </StackPanel>
+
+                        <!-- Board Wipes -->
+                        <StackPanel Margin="0,10">
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Board Wipes" Foreground="White" FontSize="12" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Text="{Binding WipeCount, StringFormat='{}{0} / 3'}" Foreground="{StaticResource TextMutedBrush}" FontSize="12"/>
+                            </Grid>
+                            <ProgressBar Value="{Binding WipeCount}" Minimum="0" Maximum="3" Height="8" Foreground="#9b59b6" Background="#1a1b24" BorderThickness="0"/>
+                        </StackPanel>
+
+                        <!-- Protection -->
+                        <StackPanel Margin="0,10">
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Protection" Foreground="White" FontSize="12" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Text="{Binding ProtectionCount, StringFormat='{}{0} / 6'}" Foreground="{StaticResource TextMutedBrush}" FontSize="12"/>
+                            </Grid>
+                            <ProgressBar Value="{Binding ProtectionCount}" Minimum="0" Maximum="6" Height="8" Foreground="#bdc3c7" Background="#1a1b24" BorderThickness="0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+        </Grid>
+    </Border>
+</UserControl>

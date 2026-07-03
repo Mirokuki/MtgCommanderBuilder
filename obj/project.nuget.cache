@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "eqFDB1anz6c=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\rsuff\\OneDrive\\Documents\\MtgCommanderBuilder-Wild\\MtgCommanderBuilder.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\rsuff\\.nuget\\packages\\wpf-ui\\3.0.0\\wpf-ui.3.0.0.nupkg.sha512",
+    "C:\\Users\\rsuff\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.19041.57\\microsoft.windows.sdk.net.ref.10.0.19041.57.nupkg.sha512"
+  ],
+  "logs": []
+}
