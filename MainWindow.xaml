@@ -1570,7 +1570,7 @@
                                          </Style>
                                      </StackPanel.Style>
                                      <TextBlock Text="Zoom:" Foreground="{StaticResource TextMutedBrush}" FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                     <Slider x:Name="CardZoomSlider" Minimum="0.5" Maximum="2.0" Value="1.0" Width="100" VerticalAlignment="Center"/>
+                                     <Slider x:Name="CardZoomSlider" Minimum="0.5" Maximum="2.0" Value="{Binding CardZoomScale, Mode=TwoWay}" Width="100" VerticalAlignment="Center"/>
                                      <TextBlock Text="{Binding ElementName=CardZoomSlider, Path=Value, StringFormat='{}{0:P0}'}" Foreground="White" FontSize="11" Width="36" TextAlignment="Right" VerticalAlignment="Center" Margin="8,0,0,0"/>
                                  </StackPanel>
                              </Grid>
@@ -1634,7 +1634,7 @@
                                     <DataTemplate>
                                         <Border Margin="6" Style="{StaticResource MtgCardBorder}" Width="122" Height="170" CornerRadius="8" Padding="1" ClipToBounds="True">
                                             <Border.LayoutTransform>
-                                                <ScaleTransform ScaleX="{Binding ElementName=CardZoomSlider, Path=Value}" ScaleY="{Binding ElementName=CardZoomSlider, Path=Value}"/>
+                                                <ScaleTransform ScaleX="{Binding DataContext.CardZoomScale, RelativeSource={RelativeSource AncestorType=ListBox}}" ScaleY="{Binding DataContext.CardZoomScale, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                                             </Border.LayoutTransform>
                                             <Grid>
                                                 <!-- Card Image Presenter -->

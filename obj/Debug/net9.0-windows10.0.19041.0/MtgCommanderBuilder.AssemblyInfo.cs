@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MtgCommanderBuilder")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b061e9b544b0ff2835d979c81e01a4a39d3c8b8b")]
 [assembly: System.Reflection.AssemblyProductAttribute("MtgCommanderBuilder")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MtgCommanderBuilder")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

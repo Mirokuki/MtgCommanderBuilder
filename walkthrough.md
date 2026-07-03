@@ -265,3 +265,14 @@ Fixed the usability issue where left-clicking the options menu button (`...`) di
 2. **Left-Click Code-Behind Event Handler**:
    - Created the `ContextButton_Click` method in [MainWindow.xaml.cs](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/MainWindow.xaml.cs).
    - This manually anchors and opens the `ContextMenu` directly below the button, matching standard intuitive click behavior.
+
+
+## 🔬 MVVM Card Zoom Binding Resolution
+
+Fixed the issue where the card zoom feature did not scale card images at runtime due to WPF NameScope instantiation limits inside list item DataTemplates:
+1. **Added CardZoomScale property to MainViewModel**:
+   - Implemented a `CardZoomScale` property in [MainViewModel.cs](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/ViewModels/MainViewModel.cs) to bind both the slider controls and the scale transforms.
+2. **Updated Bindings via RelativeSource**:
+   - Bound the `CardZoomSlider` in [MainWindow.xaml](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/MainWindow.xaml) directly to `CardZoomScale` in a TwoWay mode.
+   - Updated the `<ScaleTransform>` inside the ListBox `DataTemplate` to reference `DataContext.CardZoomScale` on the ancestor `ListBox` via `{RelativeSource AncestorType=ListBox}`.
+   - This bypasses template NameScope boundaries, allowing correct runtime evaluation of scaling operations.

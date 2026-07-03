@@ -3,3 +3,4 @@
 - `[x]` Compile and verify the build
 - `[x]` Document the changes in walkthrough.md
 - `[x]` Wire ContextButton_Click handler to open context menu on left-click
+- `[x]` Resolve template NameScope limits using MVVM CardZoomScale property and RelativeSource binding

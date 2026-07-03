@@ -10,6 +10,7 @@ namespace MtgCommanderBuilder.ViewModels
     {
         private string _statusText = "Initializing application...";
         private double _downloadProgress = 0;
+        private double _cardZoomScale = 1.0;
         private bool _isDownloading;
         private bool _isDbMissing = true;
         private bool _isDbLoaded;
@@ -53,6 +54,12 @@ namespace MtgCommanderBuilder.ViewModels
         {
             get => _downloadProgress;
             set => SetProperty(ref _downloadProgress, value);
+        }
+
+        public double CardZoomScale
+        {
+            get => _cardZoomScale;
+            set => SetProperty(ref _cardZoomScale, value);
         }
 
         public bool IsDownloading
