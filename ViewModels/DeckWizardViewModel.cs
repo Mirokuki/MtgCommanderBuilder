@@ -294,11 +294,13 @@ namespace MtgCommanderBuilder.ViewModels
 
         public int TotalComposition => LandsCount + CreaturesCount + ArtifactsCount + EnchantmentsCount + InstantsCount + SorceriesCount + PlaneswalkersCount + BattlesCount;
         public bool IsCompositionValid => TotalComposition == 99;
+        public bool IsCompositionInvalid => !IsCompositionValid;
 
         private void OnCompositionChanged()
         {
             OnPropertyChanged(nameof(TotalComposition));
             OnPropertyChanged(nameof(IsCompositionValid));
+            OnPropertyChanged(nameof(IsCompositionInvalid));
         }
 
         public void ApplyRecommendedComposition()

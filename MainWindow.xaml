@@ -661,23 +661,39 @@
                     </Grid.RowDefinitions>
 
                     <!-- Active Deck Selector Dropdown -->
-                    <StackPanel Grid.Row="0" Margin="0,0,0,12">
-                        <TextBlock Text="SELECT DECK" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
-                        <ComboBox ItemsSource="{Binding SavedDecks}" SelectedItem="{Binding SelectedDeck, Mode=TwoWay}" DisplayMemberPath="Name"/>
-                    </StackPanel>
+                    <Grid Grid.Row="0" Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="SELECT DECK" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                            <ComboBox ItemsSource="{Binding SavedDecks}" SelectedItem="{Binding SelectedDeck, Mode=TwoWay}" DisplayMemberPath="Name"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom" Margin="16,0,0,2">
+                            <TextBlock Text="Zoom:" Foreground="{StaticResource TextMutedBrush}" FontSize="10" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <Slider x:Name="SidebarCardZoomSlider" Minimum="0.5" Maximum="1.5" Value="{Binding CardZoomScale, Mode=TwoWay}" Width="80" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
 
                     <!-- Active Deck Info Header -->
                     <StackPanel Grid.Row="1" Margin="0,0,0,16">
-                        <TextBlock Text="RENAME DECK" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,2"/>
-                        <TextBox Text="{Binding ActiveDeckViewModel.Name, UpdateSourceTrigger=PropertyChanged}" 
-                                 FontSize="18" 
-                                 FontWeight="Bold" 
-                                 Background="Transparent" 
-                                 BorderThickness="0,0,0,1" 
-                                 BorderBrush="#2d2f3d" 
-                                 Padding="0,4"
-                                 Foreground="White"
-                                 Margin="0,0,0,8"/>
+                        <TextBlock Text="DECK NAME" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,2"/>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding ActiveDeckViewModel.Name}" 
+                                       FontSize="18" 
+                                       FontWeight="Bold" 
+                                       Foreground="White"
+                                       VerticalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <Button Grid.Column="1" Click="RenameDeck_Click" Background="Transparent" BorderBrush="Transparent" Padding="4" Margin="8,0,0,0" VerticalAlignment="Center" ToolTip="Rename Deck">
+                                <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foreground="{StaticResource TextMutedBrush}"/>
+                            </Button>
+                        </Grid>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
                             <TextBlock Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{StaticResource AccentGoldBrush}"/>
                             <TextBlock Text="{Binding ActiveDeckViewModel.DeckSize, StringFormat='{}{0} / 100 Cards'}" FontSize="12" Foreground="{StaticResource TextMutedBrush}"/>
@@ -1553,26 +1569,7 @@
                             </Grid.RowDefinitions>
 
                              <Grid Grid.Row="0" Margin="0,0,0,16">
-                                 <Grid.ColumnDefinitions>
-                                     <ColumnDefinition Width="*"/>
-                                     <ColumnDefinition Width="Auto"/>
-                                 </Grid.ColumnDefinitions>
-                                 <ui:TextBox Grid.Column="0" Padding="10" Background="#121319" Foreground="White" BorderBrush="#2c2e3c" PlaceholderText="Search cards in deck..." Name="TxtDeckListFilter" TextChanged="TxtDeckListFilter_TextChanged"/>
-                                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
-                                     <StackPanel.Style>
-                                         <Style TargetType="StackPanel">
-                                             <Setter Property="Visibility" Value="Collapsed"/>
-                                             <Style.Triggers>
-                                                 <DataTrigger Binding="{Binding DeckListLayoutMode}" Value="Card Spoiler Grid">
-                                                     <Setter Property="Visibility" Value="Visible"/>
-                                                 </DataTrigger>
-                                             </Style.Triggers>
-                                         </Style>
-                                     </StackPanel.Style>
-                                     <TextBlock Text="Zoom:" Foreground="{StaticResource TextMutedBrush}" FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                     <Slider x:Name="CardZoomSlider" Minimum="0.5" Maximum="2.0" Value="{Binding CardZoomScale, Mode=TwoWay}" Width="100" VerticalAlignment="Center"/>
-                                     <TextBlock Text="{Binding ElementName=CardZoomSlider, Path=Value, StringFormat='{}{0:P0}'}" Foreground="White" FontSize="11" Width="36" TextAlignment="Right" VerticalAlignment="Center" Margin="8,0,0,0"/>
-                                 </StackPanel>
+                                 <ui:TextBox Padding="10" Background="#121319" Foreground="White" BorderBrush="#2c2e3c" PlaceholderText="Search cards in deck..." Name="TxtDeckListFilter" TextChanged="TxtDeckListFilter_TextChanged"/>
                              </Grid>
 
                             <!-- Original DataGrid (Spreadsheet Grid) -->
@@ -1627,15 +1624,17 @@
                                         <Setter Property="BorderThickness" Value="0"/>
                                         <Setter Property="Padding" Value="0"/>
                                         <Setter Property="Margin" Value="0"/>
+                                        <Setter Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <ScaleTransform ScaleX="{Binding DataContext.CardZoomScale, RelativeSource={RelativeSource AncestorType=ListBox}}" ScaleY="{Binding DataContext.CardZoomScale, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
+                                            </Setter.Value>
+                                        </Setter>
                                         <EventSetter Event="MouseDoubleClick" Handler="DeckSpoilerItem_MouseDoubleClick"/>
                                     </Style>
                                 </ListBox.ItemContainerStyle>
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <Border Margin="6" Style="{StaticResource MtgCardBorder}" Width="122" Height="170" CornerRadius="8" Padding="1" ClipToBounds="True">
-                                            <Border.LayoutTransform>
-                                                <ScaleTransform ScaleX="{Binding DataContext.CardZoomScale, RelativeSource={RelativeSource AncestorType=ListBox}}" ScaleY="{Binding DataContext.CardZoomScale, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
-                                            </Border.LayoutTransform>
                                             <Grid>
                                                 <!-- Card Image Presenter -->
                                                 <views:CardImagePresenter Card="{Binding}" Width="120" Height="168"/>
@@ -2064,60 +2063,271 @@
                         <!-- RIGHT COLUMN: SETUP FORM -->
                         <Grid Grid.Column="1" Margin="24,0,0,0">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/> <!-- Progress Header -->
+                                <RowDefinition Height="*"/>    <!-- Scrollable Steps -->
+                                <RowDefinition Height="Auto"/> <!-- Bottom Buttons -->
                             </Grid.RowDefinitions>
 
-                            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,12,0">
+                            <!-- Progress Header -->
+                            <Grid Grid.Row="0" Margin="0,0,0,24">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Step " Foreground="{StaticResource TextMutedBrush}" FontSize="12" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding CurrentStep}" Foreground="White" FontSize="12" FontWeight="Bold"/>
+                                    <TextBlock Text=" of 7" Foreground="{StaticResource TextMutedBrush}" FontSize="12" FontWeight="SemiBold"/>
+                                </StackPanel>
+                                <ProgressBar Value="{Binding CurrentStep}" Minimum="1" Maximum="7" Height="4" Foreground="{StaticResource AccentGoldBrush}" Background="#1c1d24" BorderThickness="0" VerticalAlignment="Bottom" Margin="0,20,0,0"/>
+                            </Grid>
+
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,12,0">
                                 <StackPanel>
-                                    <!-- 1. Commander Search -->
-                                    <TextBlock Text="1. Commander" FontSize="12" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}" Margin="0,0,0,8"/>
-                                    <ui:TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Search commanders..." Padding="10,8" Margin="0,0,0,8"/>
-                                    <ListBox Height="120" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedCommander, Mode=TwoWay}" Background="#121319" BorderBrush="#2c2e3c" Margin="0,0,0,24">
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Margin="4">
-                                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="White"/>
-                                                    <TextBlock Text="{Binding TypeLine}" FontSize="10" Foreground="{StaticResource TextMutedBrush}"/>
+                                    <!-- STEP 1: COMMANDER SEARCH (Visible when Step1Active is true) -->
+                                    <StackPanel Visibility="{Binding Step1Active, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="1. Search Commander" FontSize="14" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}" Margin="0,0,0,8"/>
+                                        <ui:TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Type a legendary creature/planeswalker name..." Padding="10,8" Margin="0,0,0,8"/>
+                                        <ListBox Height="200" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedCommander, Mode=TwoWay}" Background="#121319" BorderBrush="#2c2e3c" Margin="0,0,0,16">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Margin="4">
+                                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="White"/>
+                                                        <TextBlock Text="{Binding TypeLine}" FontSize="10" Foreground="{StaticResource TextMutedBrush}"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </StackPanel>
+
+                                    <!-- STEP 2: THEME & POWER LEVEL (Visible when Step2Active is true) -->
+                                    <StackPanel Visibility="{Binding Step2Active, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="2. Choose a Theme" FontSize="14" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}" Margin="0,0,0,8"/>
+                                        <UniformGrid Columns="4" Margin="0,0,0,24">
+                                            <RadioButton Content="Counters" GroupName="WizardTheme" IsChecked="{Binding ThemeCounters}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
+                                            <RadioButton Content="Tokens" GroupName="WizardTheme" IsChecked="{Binding ThemeTokens}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
+                                            <RadioButton Content="Aristocrats" GroupName="WizardTheme" IsChecked="{Binding ThemeAristocrats}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
+                                            <RadioButton Content="Spellslinger" GroupName="WizardTheme" IsChecked="{Binding ThemeSpellslinger}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
+                                        </UniformGrid>
+
+                                        <TextBlock Text="3. Choose Deck Power" FontSize="14" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}" Margin="0,16,0,8"/>
+                                        <UniformGrid Columns="4" Margin="0,0,0,16">
+                                            <RadioButton Content="Casual" GroupName="WizardPower" IsChecked="{Binding PowerCasual}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
+                                            <RadioButton Content="Focused" GroupName="WizardPower" IsChecked="{Binding PowerFocused}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
+                                            <RadioButton Content="High Power" GroupName="WizardPower" IsChecked="{Binding PowerHigh}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
+                                            <RadioButton Content="cEDH" GroupName="WizardPower" IsChecked="{Binding PowerCedh}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
+                                        </UniformGrid>
+                                    </StackPanel>
+
+                                    <!-- STEP 3: CHOOSE STRATEGY (Visible when Step3Active is true) -->
+                                    <StackPanel Visibility="{Binding Step3Active, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="4. Choose Primary Strategy" FontSize="14" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}" Margin="0,0,0,8"/>
+                                        <UniformGrid Columns="3" Margin="0,0,0,16">
+                                            <ToggleButton Content="Control" IsChecked="{Binding StrategyControl}" Style="{StaticResource StrategySelectToggleButtonStyle}" Margin="4"/>
+                                            <ToggleButton Content="Combo" IsChecked="{Binding StrategyCombo}" Style="{StaticResource StrategySelectToggleButtonStyle}" Margin="4"/>
+                                            <ToggleButton Content="Midrange" IsChecked="{Binding StrategyMidrange}" Style="{StaticResource StrategySelectToggleButtonStyle}" Margin="4"/>
+                                            <ToggleButton Content="Aggro" IsChecked="{Binding StrategyAggro}" Style="{StaticResource StrategySelectToggleButtonStyle}" Margin="4"/>
+                                            <ToggleButton Content="Value" IsChecked="{Binding StrategyValue}" Style="{StaticResource StrategySelectToggleButtonStyle}" Margin="4"/>
+                                            <ToggleButton Content="Tribal" IsChecked="{Binding StrategyTribal}" Style="{StaticResource StrategySelectToggleButtonStyle}" Margin="4"/>
+                                        </UniformGrid>
+                                    </StackPanel>
+
+                                    <!-- STEP 4: COMPOSITION (Visible when Step4Active is true) -->
+                                    <StackPanel Visibility="{Binding Step4Active, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <Grid Margin="0,0,0,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="5. Card Type Composition (Must sum to 99)" FontSize="14" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}" VerticalAlignment="Center"/>
+                                            <Button Grid.Column="1" Content="Apply Recommended" Command="{Binding ResetCommand}" Padding="8,4" Background="#16171e" BorderBrush="#2c2e3c" Foreground="White" FontSize="10"/>
+                                        </Grid>
+
+                                        <Grid Margin="0,0,0,16">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                                <TextBlock Text="Lands" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding LandsCount, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
+                                                
+                                                <TextBlock Text="Creatures" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding CreaturesCount, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
+
+                                                <TextBlock Text="Artifacts" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding ArtifactsCount, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
+
+                                                <TextBlock Text="Enchantments" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding EnchantmentsCount, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                                <TextBlock Text="Instants" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding InstantsCount, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
+
+                                                <TextBlock Text="Sorceries" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding SorceriesCount, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
+
+                                                <TextBlock Text="Planeswalkers" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding PlaneswalkersCount, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
+
+                                                <TextBlock Text="Battles" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding BattlesCount, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <Border Background="#16171e" BorderBrush="#2c2e3c" BorderThickness="1" Padding="12" CornerRadius="4">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="Total Cards: " Foreground="White" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding TotalComposition}" Foreground="White" FontWeight="Bold"/>
+                                                    <TextBlock Text=" / 99" Foreground="{StaticResource TextMutedBrush}"/>
                                                 </StackPanel>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
+                                                <TextBlock Grid.Column="1" Text="Valid! Ready to proceed." Foreground="#4caf50" FontWeight="Bold" Visibility="{Binding IsCompositionValid, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                <TextBlock Grid.Column="1" Text="Error: Must sum to exactly 99" Foreground="Red" FontWeight="Bold" Visibility="{Binding IsCompositionInvalid, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            </Grid>
+                                        </Border>
+                                    </StackPanel>
 
-                                    <!-- 2. Choose a Theme -->
-                                    <TextBlock Text="2. Choose a Theme" FontSize="12" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}" Margin="0,0,0,8"/>
-                                    <UniformGrid Columns="4" Margin="0,0,0,24">
-                                        <RadioButton Content="Counters" GroupName="WizardTheme" IsChecked="{Binding ThemeCounters}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
-                                        <RadioButton Content="Tokens" GroupName="WizardTheme" IsChecked="{Binding ThemeTokens}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
-                                        <RadioButton Content="Aristocrats" GroupName="WizardTheme" IsChecked="{Binding ThemeAristocrats}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
-                                        <RadioButton Content="Spellslinger" GroupName="WizardTheme" IsChecked="{Binding ThemeSpellslinger}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
-                                    </UniformGrid>
+                                    <!-- STEP 5: FUNCTIONS / GOALS (Visible when Step5Active is true) -->
+                                    <StackPanel Visibility="{Binding Step5Active, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="6. Deck Category Target Goals" FontSize="14" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}" Margin="0,0,0,12"/>
+                                        
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                                <TextBlock Text="Mana Ramp Goal" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding RampGoal, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
 
-                                    <!-- 3. Choose Deck Power -->
-                                    <TextBlock Text="3. Choose Deck Power" FontSize="12" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}" Margin="0,0,0,8"/>
-                                    <UniformGrid Columns="4" Margin="0,0,0,24">
-                                        <RadioButton Content="Casual" GroupName="WizardPower" IsChecked="{Binding PowerCasual}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
-                                        <RadioButton Content="Focused" GroupName="WizardPower" IsChecked="{Binding PowerFocused}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
-                                        <RadioButton Content="High Power" GroupName="WizardPower" IsChecked="{Binding PowerHigh}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
-                                        <RadioButton Content="cEDH" GroupName="WizardPower" IsChecked="{Binding PowerCedh}" Style="{StaticResource ThemeSelectRadioButtonStyle}"/>
-                                    </UniformGrid>
+                                                <TextBlock Text="Card Draw Goal" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding DrawGoal, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
 
-                                    <!-- 4. Choose Primary Strategy (Recommend 2) -->
-                                    <TextBlock Text="4. Choose Primary Strategy (Recommend 2)" FontSize="12" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}" Margin="0,0,0,8"/>
-                                    <UniformGrid Columns="6" Margin="0,0,0,16">
-                                        <ToggleButton Content="Control" IsChecked="{Binding StrategyControl}" Style="{StaticResource StrategySelectToggleButtonStyle}"/>
-                                        <ToggleButton Content="Combo" IsChecked="{Binding StrategyCombo}" Style="{StaticResource StrategySelectToggleButtonStyle}"/>
-                                        <ToggleButton Content="Midrange" IsChecked="{Binding StrategyMidrange}" Style="{StaticResource StrategySelectToggleButtonStyle}"/>
-                                        <ToggleButton Content="Aggro" IsChecked="{Binding StrategyAggro}" Style="{StaticResource StrategySelectToggleButtonStyle}"/>
-                                        <ToggleButton Content="Value" IsChecked="{Binding StrategyValue}" Style="{StaticResource StrategySelectToggleButtonStyle}"/>
-                                        <ToggleButton Content="Tribal" IsChecked="{Binding StrategyTribal}" Style="{StaticResource StrategySelectToggleButtonStyle}"/>
-                                    </UniformGrid>
+                                                <TextBlock Text="Single Target Removal Goal" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding RemovalGoal, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
+
+                                                <TextBlock Text="Board Wipes Goal" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding WipeGoal, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                                <TextBlock Text="Protection Cards Goal" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding ProtectionGoal, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
+
+                                                <TextBlock Text="Recursion Goal" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding RecursionGoal, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
+
+                                                <TextBlock Text="Tutors Goal" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding TutorGoal, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
+
+                                                <TextBlock Text="Finisher Cards Goal" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                                                <ui:TextBox Text="{Binding FinisherGoal, UpdateSourceTrigger=PropertyChanged}" Height="34" Margin="0,0,0,12"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+
+                                    <!-- STEP 6: RESTRICTIONS (Visible when Step6Active is true) -->
+                                    <StackPanel Visibility="{Binding Step6Active, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="7. Choose Deck Rules &amp; Constraints" FontSize="14" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}" Margin="0,0,0,16"/>
+                                        
+                                        <CheckBox Content="Allow Proxy Cards" IsChecked="{Binding AllowProxies}" FontSize="12" Margin="0,0,0,12"/>
+                                        <CheckBox Content="Strict Singleton Rules (Except Basic Lands)" IsChecked="{Binding StrictSingleton}" FontSize="12" Margin="0,0,0,12"/>
+                                        <CheckBox Content="Enforce Commander Color Identity" IsChecked="{Binding ColorIdentityRule}" FontSize="12" Margin="0,0,0,16"/>
+                                    </StackPanel>
+
+                                    <!-- STEP 7: REVIEW & GENERATE (Visible when Step7Active is true) -->
+                                    <StackPanel Visibility="{Binding Step7Active, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="8. Review Your New Deck" FontSize="14" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}" Margin="0,0,0,16"/>
+                                        
+                                        <Border Background="#121319" BorderBrush="#2c2e3c" BorderThickness="1" CornerRadius="6" Padding="16" Margin="0,0,0,16">
+                                            <StackPanel>
+                                                <Grid Margin="0,0,0,8">
+                                                    <TextBlock Text="Commander:" Foreground="{StaticResource TextMutedBrush}" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding SelectedCommander.Name}" Foreground="White" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                                </Grid>
+                                                <Grid Margin="0,0,0,8">
+                                                    <TextBlock Text="Theme:" Foreground="{StaticResource TextMutedBrush}"/>
+                                                    <TextBlock Text="{Binding Theme}" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                                                </Grid>
+                                                <Grid Margin="0,0,0,8">
+                                                    <TextBlock Text="Power Level:" Foreground="{StaticResource TextMutedBrush}"/>
+                                                    <TextBlock Text="{Binding PowerLevel}" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                                                </Grid>
+                                                <Grid Margin="0,0,0,8">
+                                                    <TextBlock Text="Strategy:" Foreground="{StaticResource TextMutedBrush}"/>
+                                                    <TextBlock Text="{Binding Strategy}" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border Background="#121319" BorderBrush="#2c2e3c" BorderThickness="1" CornerRadius="6" Padding="16">
+                                            <StackPanel>
+                                                <TextBlock Text="Planned Composition Summary" FontWeight="Bold" Foreground="White" Margin="0,0,0,12"/>
+                                                <UniformGrid Columns="2">
+                                                    <TextBlock Text="{Binding LandsCount, StringFormat='Lands: {0}'}" Margin="2"/>
+                                                    <TextBlock Text="{Binding CreaturesCount, StringFormat='Creatures: {0}'}" Margin="2"/>
+                                                    <TextBlock Text="{Binding ArtifactsCount, StringFormat='Artifacts: {0}'}" Margin="2"/>
+                                                    <TextBlock Text="{Binding EnchantmentsCount, StringFormat='Enchantments: {0}'}" Margin="2"/>
+                                                    <TextBlock Text="{Binding InstantsCount, StringFormat='Instants: {0}'}" Margin="2"/>
+                                                    <TextBlock Text="{Binding SorceriesCount, StringFormat='Sorceries: {0}'}" Margin="2"/>
+                                                    <TextBlock Text="{Binding PlaneswalkersCount, StringFormat='Planeswalkers: {0}'}" Margin="2"/>
+                                                    <TextBlock Text="{Binding BattlesCount, StringFormat='Battles: {0}'}" Margin="2"/>
+                                                </UniformGrid>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
                                 </StackPanel>
                             </ScrollViewer>
 
-                            <!-- Bottom Continue Button -->
-                            <Border Grid.Row="1" BorderBrush="#20222a" BorderThickness="0,1,0,0" Padding="0,16,0,0">
-                                <Button Content="Continue" Command="{Binding NextCommand}" HorizontalAlignment="Right" Width="140" Padding="12" Background="#5c2bb0" Foreground="White" BorderThickness="0" FontWeight="SemiBold"/>
+                            <!-- Bottom Navigation Buttons -->
+                            <Border Grid.Row="2" BorderBrush="#20222a" BorderThickness="0,1,0,0" Padding="0,16,0,0">
+                                <Grid>
+                                    <!-- Back button (visible when CurrentStep > 1) -->
+                                    <Button Content="Back" Command="{Binding BackCommand}" HorizontalAlignment="Left" Width="100" Padding="12" Background="#1c1d24" BorderBrush="#2c2e3c" Foreground="White" FontWeight="SemiBold">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding CurrentStep}" Value="1">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+
+                                    <!-- Stack to host Continue and Generate buttons on the right -->
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <!-- Continue button (visible on steps 1 to 6) -->
+                                        <Button Content="Continue" Command="{Binding NextCommand}" Width="140" Padding="12" Background="#5c2bb0" Foreground="White" BorderThickness="0" FontWeight="SemiBold">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentStep}" Value="7">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+
+                                        <!-- Generate button (visible only on step 7) -->
+                                        <Button Content="Generate Deck" Command="{Binding GenerateCommand}" Width="160" Padding="12" Background="#caa13e" Foreground="Black" BorderThickness="0" FontWeight="Bold">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentStep}" Value="7">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
                             </Border>
                         </Grid>
                     </Grid>

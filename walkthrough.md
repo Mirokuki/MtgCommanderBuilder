@@ -276,3 +276,15 @@ Fixed the issue where the card zoom feature did not scale card images at runtime
    - Bound the `CardZoomSlider` in [MainWindow.xaml](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/MainWindow.xaml) directly to `CardZoomScale` in a TwoWay mode.
    - Updated the `<ScaleTransform>` inside the ListBox `DataTemplate` to reference `DataContext.CardZoomScale` on the ancestor `ListBox` via `{RelativeSource AncestorType=ListBox}`.
    - This bypasses template NameScope boundaries, allowing correct runtime evaluation of scaling operations.
+
+
+## 🧙 Deck Wizard Step Panel UI & Card Zoom Reflow
+
+Fixed the issues where the Deck Wizard could not be completed and the card zoom scaling failed:
+1. **Container-Based Card Scaling (Fixed Zoom)**:
+   - Moved the `ScaleTransform` from inside the `DataTemplate` border to the `ListBox.ItemContainerStyle` `LayoutTransform` property inside [MainWindow.xaml](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/MainWindow.xaml).
+   - This scales the actual `ListBoxItem` container, resolving visual tree binding lookups and reflowing the items panel correctly.
+2. **7-Step Deck Wizard Layout**:
+   - Implemented 7 distinct setup views linked to visibility properties (`Step1Active` through `Step7Active`) inside [MainWindow.xaml](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/MainWindow.xaml).
+   - Added a progress header with a `ProgressBar` displaying the current step.
+   - Added Back, Continue, and Generate Deck buttons at the bottom that dynamically hide and show depending on the wizard's step progress.

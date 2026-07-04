@@ -1,6 +1,5 @@
-- `[x]` Update MainWindow.xaml to add CardZoomSlider and apply ScaleTransform to the Card Spoiler ListBox template
-- `[x]` Update MainViewModel.cs to add a confirmation prompt to DeleteDeck and implement DeleteUnusedEdhrecCache logic
-- `[x]` Compile and verify the build
-- `[x]` Document the changes in walkthrough.md
-- `[x]` Wire ContextButton_Click handler to open context menu on left-click
-- `[x]` Resolve template NameScope limits using MVVM CardZoomScale property and RelativeSource binding
+- `[x]` Update ViewModels/DeckWizardViewModel.cs to implement IsCompositionInvalid
+- `[x]` Update MainWindow.xaml to style ListBoxItem with scale transform and remove template-bound scale transform
+- `[x]` Update MainWindow.xaml to implement the 7-step wizard view, progress bar, and navigation buttons
+- `[x]` Verify the build compiles successfully
+- `[x]` Test run and document changes in walkthrough.md
