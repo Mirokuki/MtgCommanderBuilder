@@ -153,6 +153,11 @@ namespace MtgCommanderBuilder
 
         public void SelectCardInInspector(Card card)
         {
+            if (MainTabControl != null && MainTabControl.SelectedIndex != 1)
+            {
+                MainTabControl.SelectedIndex = 1;
+            }
+
             _selectedCard = card;
             SelectionPanel.DataContext = card;
 
@@ -2073,6 +2078,8 @@ namespace MtgCommanderBuilder
             }
         }
 
+
+
         private void DeckListGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (DeckListGrid.SelectedItem is Card card)
@@ -2085,10 +2092,22 @@ namespace MtgCommanderBuilder
         {
             if (e.ChangedButton != System.Windows.Input.MouseButton.Left) return;
 
-            if (sender is ListBoxItem item && item.DataContext is Card card)
+            if (sender is FrameworkElement element && element.DataContext is Card card)
             {
                 SelectCardInInspector(card);
                 e.Handled = true;
+            }
+        }
+
+        private void DeckSpoilerItem_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2 && e.ChangedButton == System.Windows.Input.MouseButton.Left)
+            {
+                if (sender is FrameworkElement element && element.DataContext is Card card)
+                {
+                    SelectCardInInspector(card);
+                    e.Handled = true;
+                }
             }
         }
 
@@ -2098,9 +2117,9 @@ namespace MtgCommanderBuilder
             {
                 LeftActiveDeckColumn.Width = isVisible ? new GridLength(320) : new GridLength(0);
             }
-            if (LeftSearchPanelGrid != null)
+            if (LeftActiveDeckBorder != null)
             {
-                LeftSearchPanelGrid.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+                LeftActiveDeckBorder.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -2113,6 +2132,14 @@ namespace MtgCommanderBuilder
             if (RightStatsBorder != null)
             {
                 RightStatsBorder.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
+            }
+            if (SearchInspectorColumn != null)
+            {
+                SearchInspectorColumn.Width = isVisible ? new GridLength(300) : new GridLength(0);
+            }
+            if (SearchInspectorBorder != null)
+            {
+                SearchInspectorBorder.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 

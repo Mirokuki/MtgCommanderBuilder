@@ -1,5 +1,17 @@
 - `[x]` Update ViewModels/DeckWizardViewModel.cs to implement IsCompositionInvalid
 - `[x]` Update MainWindow.xaml to style ListBoxItem with scale transform and remove template-bound scale transform
 - `[x]` Update MainWindow.xaml to implement the 7-step wizard view, progress bar, and navigation buttons
+- `[x]` Move Card Zoom Slider to main viewport header panel and remove tab-specific sliders
+- `[x]` Relocate LayoutTransform to UserControl level in CardItemView.xaml
+- `[x]` Remove redundant SELECT DECK selector and DECK NAME block from the card sidebar header
+- `[x]` Fix DataContext and ProgressBar binding modes on views:AnalyticsView in MainWindow.xaml
+- `[x]` Bind deck health score gauge, category checklist, strategy polygon, and curve line-graph dynamically in DeckHealthView.xaml
+- `[x]` Fix curve consistency line graph width, margins, Y-axis markings, and add X-axis labels
+- `[x]` Create dedicated 'Card Search' Tab 2 hosting search results, staples, and the card inspector panel
+- `[x]` Expand Tab 1 'Deck View' to a full tabletop card board + Live Analysis stats sidebar
+- `[x]` Update Left and Right sidebar visibility code to toggle sidebars in Tab 2 and Tab 1 respectively
+- `[x]` Auto-navigate to Card Search tab when inspecting a card from another tab view
+- `[x]` Change left sidebar of the Card Search tab to a compact list view row template
+- `[x]` Implement a dedicated decklist filter textbox for the Search Tab sidebar
 - `[x]` Verify the build compiles successfully
 - `[x]` Test run and document changes in walkthrough.md

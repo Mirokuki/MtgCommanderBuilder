@@ -555,6 +555,16 @@
                                 <TextBlock Text="Est. Price" FontSize="10" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Right"/>
                             </StackPanel>
 
+                            <!-- Card Zoom Slider -->
+                            <StackPanel Margin="0,0,24,0" VerticalAlignment="Center">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <TextBlock Text="Zoom:" Foreground="{StaticResource TextMutedBrush}" FontSize="10" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                    <Slider x:Name="HeaderCardZoomSlider" Minimum="0.5" Maximum="1.5" Value="{Binding CardZoomScale, Mode=TwoWay}" Width="100" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding ElementName=HeaderCardZoomSlider, Path=Value, StringFormat='{}{0:P0}'}" Foreground="White" FontSize="10" Width="36" TextAlignment="Right" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                                </StackPanel>
+                                <TextBlock Text="Card Size" FontSize="10" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Right" Margin="0,2,0,0"/>
+                            </StackPanel>
+
                             <!-- Save Button -->
                             <Button Click="SaveDeck_Click" Background="#5c2bb0" Foreground="White" BorderThickness="0" Padding="16,10" FontWeight="SemiBold" Margin="0,0,8,0">
                                 <StackPanel Orientation="Horizontal">
@@ -645,86 +655,44 @@
                     <!-- TAB 1: DECK VIEW -->
                     <TabItem Header="Deck View">
                         <Grid Background="{StaticResource ObsidianBackgroundBrush}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition x:Name="LeftActiveDeckColumn" Width="320"/> <!-- Column 0: Left Search Panel -->
-                        <ColumnDefinition Width="*"/>   <!-- Column 1: Center Active Deck List -->
-                        <ColumnDefinition x:Name="RightStatsColumn" Width="340"/> <!-- Column 2: Right Commander & stats sidebar -->
-                    </Grid.ColumnDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>   <!-- Column 0: Main active deck card board -->
+                                <ColumnDefinition x:Name="RightStatsColumn" Width="340"/> <!-- Column 1: Right Commander & stats sidebar -->
+                            </Grid.ColumnDefinitions>
 
-            <!-- ================= COLUMN 0: ACTIVE DECK SIDEBAR ================= -->
-            <Border x:Name="LeftActiveDeckBorder" Grid.Column="1" Style="{StaticResource ObsidianGlassPanel}" Margin="16,16" Padding="14,16">
+            <Border Grid.Column="0" Style="{StaticResource ObsidianGlassPanel}" Margin="20,16,16,16" Padding="14,16">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/> <!-- Active Deck Selection Dropdown -->
-                        <RowDefinition Height="Auto"/> <!-- Live Size & Name edit -->
+                        <RowDefinition Height="Auto"/> <!-- Grouping & Sorting Controls -->
                         <RowDefinition Height="*"/>    <!-- Scrollable Grouped Card lists -->
                     </Grid.RowDefinitions>
 
-                    <!-- Active Deck Selector Dropdown -->
-                    <Grid Grid.Row="0" Margin="0,0,0,12">
+                    <!-- Grouping & Sorting Controls -->
+                    <Grid Grid.Row="0" Margin="0,0,0,16">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0">
-                            <TextBlock Text="SELECT DECK" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
-                            <ComboBox ItemsSource="{Binding SavedDecks}" SelectedItem="{Binding SelectedDeck, Mode=TwoWay}" DisplayMemberPath="Name"/>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,6,0">
+                            <TextBlock Text="GROUP BY" FontSize="9" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                            <ComboBox Height="40" FontSize="11" VerticalContentAlignment="Center" Padding="8,0,28,0"
+                                      ItemsSource="{Binding ActiveDeckViewModel.GroupModes}"
+                                      SelectedItem="{Binding ActiveDeckViewModel.SelectedGroupMode, Mode=TwoWay}"
+                                      Background="#121319" Foreground="White" BorderBrush="#2c2e3c"/>
                         </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom" Margin="16,0,0,2">
-                            <TextBlock Text="Zoom:" Foreground="{StaticResource TextMutedBrush}" FontSize="10" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                            <Slider x:Name="SidebarCardZoomSlider" Minimum="0.5" Maximum="1.5" Value="{Binding CardZoomScale, Mode=TwoWay}" Width="80" VerticalAlignment="Center"/>
+
+                        <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                            <TextBlock Text="SORT BY" FontSize="9" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
+                            <ComboBox Height="40" FontSize="11" VerticalContentAlignment="Center" Padding="8,0,28,0"
+                                      ItemsSource="{Binding ActiveDeckViewModel.SortOrders}"
+                                      SelectedItem="{Binding ActiveDeckViewModel.CurrentSortOrder, Mode=TwoWay}"
+                                      Background="#121319" Foreground="White" BorderBrush="#2c2e3c"/>
                         </StackPanel>
                     </Grid>
 
-                    <!-- Active Deck Info Header -->
-                    <StackPanel Grid.Row="1" Margin="0,0,0,16">
-                        <TextBlock Text="DECK NAME" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,2"/>
-                        <Grid Margin="0,0,0,8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding ActiveDeckViewModel.Name}" 
-                                       FontSize="18" 
-                                       FontWeight="Bold" 
-                                       Foreground="White"
-                                       VerticalAlignment="Center"
-                                       TextTrimming="CharacterEllipsis"/>
-                            <Button Grid.Column="1" Click="RenameDeck_Click" Background="Transparent" BorderBrush="Transparent" Padding="4" Margin="8,0,0,0" VerticalAlignment="Center" ToolTip="Rename Deck">
-                                <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foreground="{StaticResource TextMutedBrush}"/>
-                            </Button>
-                        </Grid>
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
-                            <TextBlock Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{StaticResource AccentGoldBrush}"/>
-                            <TextBlock Text="{Binding ActiveDeckViewModel.DeckSize, StringFormat='{}{0} / 100 Cards'}" FontSize="12" Foreground="{StaticResource TextMutedBrush}"/>
-                        </StackPanel>
-
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Grid.Column="0" Margin="0,0,6,0">
-                                <TextBlock Text="GROUP BY" FontSize="9" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
-                                <ComboBox Height="40" FontSize="11" VerticalContentAlignment="Center" Padding="8,0,28,0"
-                                          ItemsSource="{Binding ActiveDeckViewModel.GroupModes}"
-                                          SelectedItem="{Binding ActiveDeckViewModel.SelectedGroupMode, Mode=TwoWay}"
-                                          Background="#121319" Foreground="White" BorderBrush="#2c2e3c"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="1" Margin="6,0,0,0">
-                                <TextBlock Text="SORT BY" FontSize="9" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,4"/>
-                                <ComboBox Height="40" FontSize="11" VerticalContentAlignment="Center" Padding="8,0,28,0"
-                                          ItemsSource="{Binding ActiveDeckViewModel.SortOrders}"
-                                          SelectedItem="{Binding ActiveDeckViewModel.CurrentSortOrder, Mode=TwoWay}"
-                                          Background="#121319" Foreground="White" BorderBrush="#2c2e3c"/>
-                            </StackPanel>
-                        </Grid>
-                    </StackPanel>
-
                     <!-- Scrollable Grouped lists -->
-                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="0,0,4,0" DataContext="{Binding ActiveDeckViewModel}">
                             
                             <!-- COMMANDER GROUP -->
@@ -782,8 +750,439 @@
                 </Grid>
             </Border>
 
-            <!-- ================= COLUMN 1: CENTER SEARCH ENGINE & INSPECTOR ================= -->
-            <Grid x:Name="LeftSearchPanelGrid" Grid.Column="0" Margin="20,16,0,16">
+
+            <Border x:Name="RightStatsBorder" Grid.Column="1" Style="{StaticResource ObsidianGlassPanel}" Margin="0,16,20,16" Padding="14,16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Title: Live Analysis -->
+                        <RowDefinition Height="*"/>    <!-- Scrollable content -->
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="LIVE ANALYSIS" FontSize="11" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}" Margin="0,0,0,16"/>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel>
+                            <!-- 1. DECK SCORE GAUGE -->
+                            <TextBlock Text="Deck Score" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,8"/>
+                            <Grid Width="110" Height="110" HorizontalAlignment="Center" Margin="0,0,0,20">
+                                <Ellipse Stroke="#1c1d24" StrokeThickness="8" Width="100" Height="100"/>
+                                <Ellipse Stroke="#2ecc71" StrokeThickness="8" StrokeDashArray="26.86, 8.48" Width="100" Height="100" RenderTransformOrigin="0.5,0.5">
+                                    <Ellipse.RenderTransform>
+                                        <RotateTransform Angle="-90"/>
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <TextBlock Text="76" FontSize="26" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Very Strong" FontSize="9" FontWeight="SemiBold" Foreground="#2ecc71" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Separator Background="#20222a" Margin="0,0,0,16"/>
+
+                            <!-- 2. MINI MANA CURVE -->
+                            <TextBlock Text="Mana Curve" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,8"/>
+                            <Grid Margin="0,0,0,20">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="80"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <UniformGrid Grid.Row="0" Columns="8" VerticalAlignment="Bottom" Height="80">
+                                    <views:CurveBar ValueCount="0" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="0" DataContext="{Binding ActiveDeckViewModel}"/>
+                                    <views:CurveBar ValueCount="1" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="1" DataContext="{Binding ActiveDeckViewModel}"/>
+                                    <views:CurveBar ValueCount="2" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="2" DataContext="{Binding ActiveDeckViewModel}"/>
+                                    <views:CurveBar ValueCount="3" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="3" DataContext="{Binding ActiveDeckViewModel}"/>
+                                    <views:CurveBar ValueCount="4" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="4" DataContext="{Binding ActiveDeckViewModel}"/>
+                                    <views:CurveBar ValueCount="5" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="5" DataContext="{Binding ActiveDeckViewModel}"/>
+                                    <views:CurveBar ValueCount="6" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="6" DataContext="{Binding ActiveDeckViewModel}"/>
+                                    <views:CurveBar ValueCount="7" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="7+" DataContext="{Binding ActiveDeckViewModel}"/>
+                                </UniformGrid>
+                                <UniformGrid Grid.Row="1" Columns="8" Margin="0,4,0,0">
+                                    <TextBlock Text="0" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="1" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="2" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="3" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="4" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="5" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="6" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="7+" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
+                                </UniformGrid>
+                            </Grid>
+
+                            <Separator Background="#20222a" Margin="0,0,0,16"/>
+
+                            <!-- 3. COLOR IDENTITY -->
+                            <TextBlock Text="Color Identity" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,8"/>
+                            <Grid Width="90" Height="90" HorizontalAlignment="Center" Margin="0,0,0,20">
+                                <Ellipse Stroke="#1c1d24" StrokeThickness="8" Width="80" Height="80"/>
+                                <Grid>
+                                    <TextBlock Text="{Binding ActiveDeckViewModel.ColorIdentityText}" FontSize="10" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    
+                                    <!-- White (W) -->
+                                    <Ellipse Fill="#f0f2c5" Width="14" Height="14" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,4,0,0">
+                                        <Ellipse.Style>
+                                            <Style TargetType="Ellipse">
+                                                <Setter Property="Opacity" Value="0.15"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ActiveDeckViewModel.HasWhite}" Value="True">
+                                                        <Setter Property="Opacity" Value="1.0"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
+                                    </Ellipse>
+                                    
+                                    <!-- Blue (U) -->
+                                    <Ellipse Fill="#3498db" Width="14" Height="14" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,4,0">
+                                        <Ellipse.Style>
+                                            <Style TargetType="Ellipse">
+                                                <Setter Property="Opacity" Value="0.15"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ActiveDeckViewModel.HasBlue}" Value="True">
+                                                        <Setter Property="Opacity" Value="1.0"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
+                                    </Ellipse>
+                                    
+                                    <!-- Black (B) -->
+                                    <Ellipse Fill="#121212" Stroke="#333" StrokeThickness="1" Width="14" Height="14" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,18,6">
+                                        <Ellipse.Style>
+                                            <Style TargetType="Ellipse">
+                                                <Setter Property="Opacity" Value="0.15"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ActiveDeckViewModel.HasBlack}" Value="True">
+                                                        <Setter Property="Opacity" Value="1.0"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
+                                    </Ellipse>
+                                    
+                                    <!-- Red (R) -->
+                                    <Ellipse Fill="#e74c3c" Width="14" Height="14" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="18,0,0,6">
+                                        <Ellipse.Style>
+                                            <Style TargetType="Ellipse">
+                                                <Setter Property="Opacity" Value="0.15"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ActiveDeckViewModel.HasRed}" Value="True">
+                                                        <Setter Property="Opacity" Value="1.0"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
+                                    </Ellipse>
+                                    
+                                    <!-- Green (G) -->
+                                    <Ellipse Fill="#2ecc71" Width="14" Height="14" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4,0,0,0">
+                                        <Ellipse.Style>
+                                            <Style TargetType="Ellipse">
+                                                <Setter Property="Opacity" Value="0.15"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ActiveDeckViewModel.HasGreen}" Value="True">
+                                                        <Setter Property="Opacity" Value="1.0"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
+                                    </Ellipse>
+                                </Grid>
+                            </Grid>
+
+                            <Separator Background="#20222a" Margin="0,0,0,16"/>
+
+                            <!-- 4. GOALS STATUS TRACKER -->
+                            <TextBlock Text="Goal Status Tracker" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,8"/>
+                            <StackPanel Margin="0,0,0,10">
+                                <!-- Lands Goal Tracker -->
+                                <StackPanel Margin="0,2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Lands" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.LandsCount, StringFormat='{}{0}'}" Foreground="White" FontSize="11"/>
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.LandsGoal, StringFormat='/ {0}'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,0"/>
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.LandsStatus, StringFormat=' ({0})'}" Foreground="{Binding ActiveDeckViewModel.LandsStatusBrush}" FontSize="11" FontWeight="Bold" Margin="4,0,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <ProgressBar Value="{Binding ActiveDeckViewModel.LandsCount, Mode=OneWay}" Maximum="{Binding ActiveDeckViewModel.LandsGoal}" Height="4" Foreground="{Binding ActiveDeckViewModel.LandsStatusBrush}" Background="#1c1d24" BorderThickness="0" Margin="0,4,0,6"/>
+                                </StackPanel>
+
+                                <!-- Ramp Goal Tracker -->
+                                <StackPanel Margin="0,2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Ramp" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.RampCount, StringFormat='{}{0}'}" Foreground="White" FontSize="11"/>
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.RampGoal, StringFormat='/ {0}'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,0"/>
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.RampStatus, StringFormat=' ({0})'}" Foreground="{Binding ActiveDeckViewModel.RampStatusBrush}" FontSize="11" FontWeight="Bold" Margin="4,0,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <ProgressBar Value="{Binding ActiveDeckViewModel.RampCount, Mode=OneWay}" Maximum="{Binding ActiveDeckViewModel.RampGoal}" Height="4" Foreground="{Binding ActiveDeckViewModel.RampStatusBrush}" Background="#1c1d24" BorderThickness="0" Margin="0,4,0,6"/>
+                                </StackPanel>
+
+                                <!-- Card Draw Goal Tracker -->
+                                <StackPanel Margin="0,2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Card Draw" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.DrawCount, StringFormat='{}{0}'}" Foreground="White" FontSize="11"/>
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.DrawGoal, StringFormat='/ {0}'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,0"/>
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.DrawStatus, StringFormat=' ({0})'}" Foreground="{Binding ActiveDeckViewModel.DrawStatusBrush}" FontSize="11" FontWeight="Bold" Margin="4,0,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <ProgressBar Value="{Binding ActiveDeckViewModel.DrawCount, Mode=OneWay}" Maximum="{Binding ActiveDeckViewModel.DrawGoal}" Height="4" Foreground="{Binding ActiveDeckViewModel.DrawStatusBrush}" Background="#1c1d24" BorderThickness="0" Margin="0,4,0,6"/>
+                                </StackPanel>
+
+                                <!-- Spot Removal Goal Tracker -->
+                                <StackPanel Margin="0,2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Removal" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.RemovalCount, StringFormat='{}{0}'}" Foreground="White" FontSize="11"/>
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.RemovalGoal, StringFormat='/ {0}'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,0"/>
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.RemovalStatus, StringFormat=' ({0})'}" Foreground="{Binding ActiveDeckViewModel.RemovalStatusBrush}" FontSize="11" FontWeight="Bold" Margin="4,0,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <ProgressBar Value="{Binding ActiveDeckViewModel.RemovalCount, Mode=OneWay}" Maximum="{Binding ActiveDeckViewModel.RemovalGoal}" Height="4" Foreground="{Binding ActiveDeckViewModel.RemovalStatusBrush}" Background="#1c1d24" BorderThickness="0" Margin="0,4,0,6"/>
+                                </StackPanel>
+
+                                <!-- Board Wipes Goal Tracker -->
+                                <StackPanel Margin="0,2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Board Wipes" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.WipeCount, StringFormat='{}{0}'}" Foreground="White" FontSize="11"/>
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.WipeGoal, StringFormat='/ {0}'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,0"/>
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.WipeStatus, StringFormat=' ({0})'}" Foreground="{Binding ActiveDeckViewModel.WipeStatusBrush}" FontSize="11" FontWeight="Bold" Margin="4,0,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <ProgressBar Value="{Binding ActiveDeckViewModel.WipeCount, Mode=OneWay}" Maximum="{Binding ActiveDeckViewModel.WipeGoal}" Height="4" Foreground="{Binding ActiveDeckViewModel.WipeStatusBrush}" Background="#1c1d24" BorderThickness="0" Margin="0,4,0,6"/>
+                                </StackPanel>
+
+                                <!-- Tutors Goal Tracker -->
+                                <StackPanel Margin="0,2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Tutors" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.TutorsCount, StringFormat='{}{0}'}" Foreground="White" FontSize="11"/>
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.TutorGoal, StringFormat='/ {0}'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,0"/>
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.TutorStatus, StringFormat=' ({0})'}" Foreground="{Binding ActiveDeckViewModel.TutorStatusBrush}" FontSize="11" FontWeight="Bold" Margin="4,0,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <ProgressBar Value="{Binding ActiveDeckViewModel.TutorsCount, Mode=OneWay}" Maximum="{Binding ActiveDeckViewModel.TutorGoal}" Height="4" Foreground="{Binding ActiveDeckViewModel.TutorStatusBrush}" Background="#1c1d24" BorderThickness="0" Margin="0,4,0,6"/>
+                                </StackPanel>
+
+                                <!-- Win Conditions Goal Tracker -->
+                                <StackPanel Margin="0,2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Win Conditions" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.WinConditionsCount, StringFormat='{}{0}'}" Foreground="White" FontSize="11"/>
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.WinConditionGoal, StringFormat='/ {0}'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,0"/>
+                                            <TextBlock Text="{Binding ActiveDeckViewModel.WinConditionStatus, StringFormat=' ({0})'}" Foreground="{Binding ActiveDeckViewModel.WinConditionStatusBrush}" FontSize="11" FontWeight="Bold" Margin="4,0,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <ProgressBar Value="{Binding ActiveDeckViewModel.WinConditionsCount, Mode=OneWay}" Maximum="{Binding ActiveDeckViewModel.WinConditionGoal}" Height="4" Foreground="{Binding ActiveDeckViewModel.WinConditionStatusBrush}" Background="#1c1d24" BorderThickness="0" Margin="0,4,0,6"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <Button Content="Suggestions" HorizontalAlignment="Stretch" Padding="10" Background="#1c1d24" BorderBrush="#2c2e3c" Foreground="White" Click="OpenRecommendations_Click"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+                        </Grid>
+                    </TabItem>
+
+                    <!-- TAB 2: CARD SEARCH -->
+                    <TabItem Header="Card Search">
+                        <Grid Background="{StaticResource ObsidianBackgroundBrush}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition x:Name="LeftActiveDeckColumn" Width="320"/> <!-- Column 0: Left active deck sidebar -->
+                                <ColumnDefinition Width="*"/>   <!-- Column 1: Center search panel & Inspector -->
+                            </Grid.ColumnDefinitions>
+
+            <Border x:Name="LeftActiveDeckBorder" Grid.Column="0" Style="{StaticResource ObsidianGlassPanel}" Margin="20,16,0,16" Padding="14,16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Header & Controls -->
+                        <RowDefinition Height="*"/>    <!-- Scrollable Grouped Lists -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Header & Grouping/Sorting Controls -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,12">
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="DECK CARDS" FontSize="11" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="{Binding ActiveDeckViewModel.DeckSize, StringFormat='{}{0} / 100'}" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center"/>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                                <TextBlock Text="GROUP BY" FontSize="8" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,3"/>
+                                <ComboBox Height="32" FontSize="10" VerticalContentAlignment="Center" Padding="6,0,24,0"
+                                          ItemsSource="{Binding ActiveDeckViewModel.GroupModes}"
+                                          SelectedItem="{Binding ActiveDeckViewModel.SelectedGroupMode, Mode=TwoWay}"
+                                          Background="#121319" Foreground="White" BorderBrush="#2c2e3c"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Margin="4,0,0,0">
+                                <TextBlock Text="SORT BY" FontSize="8" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,3"/>
+                                <ComboBox Height="32" FontSize="10" VerticalContentAlignment="Center" Padding="6,0,24,0"
+                                          ItemsSource="{Binding ActiveDeckViewModel.SortOrders}"
+                                          SelectedItem="{Binding ActiveDeckViewModel.CurrentSortOrder, Mode=TwoWay}"
+                                          Background="#121319" Foreground="White" BorderBrush="#2c2e3c"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Scrollable Grouped Lists -->
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="0,0,4,0" DataContext="{Binding ActiveDeckViewModel}">
+                            
+                            <!-- COMMANDER GROUP -->
+                            <Expander IsExpanded="True" Margin="0,0,0,8" Background="#16171e" BorderBrush="#2c2e3c">
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Commander" FontWeight="Bold" FontSize="11" Foreground="#66b3ff"/>
+                                        <TextBlock Text="{Binding CommanderCount, StringFormat=' ({0})'}" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center" FontSize="9"/>
+                                    </StackPanel>
+                                </Expander.Header>
+                                <ItemsControl ItemsSource="{Binding CommanderList}" Margin="4">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="#121319" BorderBrush="#2c2e3c" BorderThickness="1" CornerRadius="6" Padding="8,6" Margin="0,1" Cursor="Hand" MouseDown="DeckSpoilerItem_MouseDown">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/> <!-- Qty badge -->
+                                                        <ColumnDefinition Width="*"/>    <!-- Name and Type -->
+                                                        <ColumnDefinition Width="Auto"/> <!-- Mana Value (CMC) -->
+                                                    </Grid.ColumnDefinitions>
+                                                    
+                                                    <!-- Qty Badge -->
+                                                    <Border Grid.Column="0" Background="#1c1d24" CornerRadius="4" Padding="5,2" Margin="0,0,8,0" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Quantity, StringFormat='{}{0}x'}" FontSize="9" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}"/>
+                                                    </Border>
+                                                    
+                                                    <!-- Name and Type -->
+                                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Name}" FontSize="11" FontWeight="SemiBold" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                                        <TextBlock Text="{Binding TypeLine}" FontSize="8" Foreground="{StaticResource TextMutedBrush}" TextTrimming="CharacterEllipsis" Margin="0,1,0,0"/>
+                                                    </StackPanel>
+                                                    
+                                                    <!-- Mana Value (CMC) -->
+                                                    <Border Grid.Column="2" Background="#22232a" CornerRadius="8" Width="16" Height="16" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="6,0,0,0">
+                                                        <TextBlock Text="{Binding Cmc}" FontSize="8" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Expander>
+
+                            <!-- DYNAMIC GROUPS -->
+                            <ItemsControl ItemsSource="{Binding Groups}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Expander IsExpanded="True" Margin="0,0,0,8" Background="#16171e" BorderBrush="#2c2e3c">
+                                            <Expander.Header>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding GroupName}" FontWeight="Bold" FontSize="11" Foreground="{Binding HeaderBrush}"/>
+                                                    <TextBlock Text="{Binding Count, StringFormat=' ({0})'}" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center" FontSize="9"/>
+                                                </StackPanel>
+                                            </Expander.Header>
+                                            <ItemsControl ItemsSource="{Binding Cards}" Margin="4">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <!-- Compact row template -->
+                                                        <Border Background="#121319" BorderBrush="#2c2e3c" BorderThickness="1" CornerRadius="6" Padding="8,6" Margin="0,1" Cursor="Hand" MouseDown="DeckSpoilerItem_MouseDown">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto"/> <!-- Qty badge -->
+                                                                    <ColumnDefinition Width="*"/>    <!-- Name and Type -->
+                                                                    <ColumnDefinition Width="Auto"/> <!-- Mana Value (CMC) -->
+                                                                </Grid.ColumnDefinitions>
+                                                                
+                                                                <!-- Qty Badge -->
+                                                                <Border Grid.Column="0" Background="#1c1d24" CornerRadius="4" Padding="5,2" Margin="0,0,8,0" VerticalAlignment="Center">
+                                                                    <TextBlock Text="{Binding Quantity, StringFormat='{}{0}x'}" FontSize="9" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}"/>
+                                                                </Border>
+                                                                
+                                                                <!-- Name and Type -->
+                                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                                    <TextBlock Text="{Binding Name}" FontSize="11" FontWeight="SemiBold" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                                                    <TextBlock Text="{Binding TypeLine}" FontSize="8" Foreground="{StaticResource TextMutedBrush}" TextTrimming="CharacterEllipsis" Margin="0,1,0,0"/>
+                                                                </StackPanel>
+                                                                
+                                                                <!-- Mana Value (CMC) -->
+                                                                <Border Grid.Column="2" Background="#22232a" CornerRadius="8" Width="16" Height="16" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="6,0,0,0">
+                                                                    <TextBlock Text="{Binding Cmc}" FontSize="8" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Border>
+                                                            </Grid>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </Expander>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+
+            <Grid x:Name="LeftSearchPanelGrid" Grid.Column="1" Margin="16,16">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/> <!-- Search & Filters Box -->
                     <RowDefinition Height="*"/>    <!-- Split search results and Card Inspector -->
@@ -838,7 +1237,7 @@
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>   <!-- Sub-Column 0: Results (Dynamic, fills remaining space) -->
-                        <ColumnDefinition Width="300"/> <!-- Sub-Column 1: Inspector (Fixed width for absolute layout stability) -->
+                        <ColumnDefinition x:Name="SearchInspectorColumn" Width="300"/> <!-- Sub-Column 1: Inspector (Fixed width for absolute layout stability) -->
                     </Grid.ColumnDefinitions>
 
                     <!-- Tabbed Results Selector -->
@@ -1174,7 +1573,7 @@
                     </TabControl>
 
                     <!-- CARD PREVIEW INSPECTOR PANEL -->
-                    <Border Grid.Column="1" Style="{StaticResource ObsidianGlassPanel}">
+                    <Border x:Name="SearchInspectorBorder" Grid.Column="1" Style="{StaticResource ObsidianGlassPanel}">
                         <Grid>
                             <!-- No selection layout -->
                             <Grid Name="NoSelectionPanel" Visibility="Visible">
@@ -1287,277 +1686,8 @@
                     </Border>
                 </Grid>
             </Grid>
-            <!-- ================= COLUMN 2: COMMANDER, STATS, & LAND HELPER ================= -->
-            <Border x:Name="RightStatsBorder" Grid.Column="2" Style="{StaticResource ObsidianGlassPanel}" Margin="0,16,20,16" Padding="14,16">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/> <!-- Title: Live Analysis -->
-                        <RowDefinition Height="*"/>    <!-- Scrollable content -->
-                    </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Text="LIVE ANALYSIS" FontSize="11" FontWeight="Bold" Foreground="{StaticResource AccentGoldBrush}" Margin="0,0,0,16"/>
-
-                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel>
-                            <!-- 1. DECK SCORE GAUGE -->
-                            <TextBlock Text="Deck Score" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,8"/>
-                            <Grid Width="110" Height="110" HorizontalAlignment="Center" Margin="0,0,0,20">
-                                <Ellipse Stroke="#1c1d24" StrokeThickness="8" Width="100" Height="100"/>
-                                <Ellipse Stroke="#2ecc71" StrokeThickness="8" StrokeDashArray="26.86, 8.48" Width="100" Height="100" RenderTransformOrigin="0.5,0.5">
-                                    <Ellipse.RenderTransform>
-                                        <RotateTransform Angle="-90"/>
-                                    </Ellipse.RenderTransform>
-                                </Ellipse>
-                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                    <TextBlock Text="76" FontSize="26" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Very Strong" FontSize="9" FontWeight="SemiBold" Foreground="#2ecc71" HorizontalAlignment="Center" Margin="0,2,0,0"/>
-                                </StackPanel>
-                            </Grid>
-
-                            <Separator Background="#20222a" Margin="0,0,0,16"/>
-
-                            <!-- 2. MINI MANA CURVE -->
-                            <TextBlock Text="Mana Curve" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,8"/>
-                            <Grid Margin="0,0,0,20">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="80"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <UniformGrid Grid.Row="0" Columns="8" VerticalAlignment="Bottom" Height="80">
-                                    <views:CurveBar ValueCount="0" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="0" DataContext="{Binding ActiveDeckViewModel}"/>
-                                    <views:CurveBar ValueCount="1" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="1" DataContext="{Binding ActiveDeckViewModel}"/>
-                                    <views:CurveBar ValueCount="2" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="2" DataContext="{Binding ActiveDeckViewModel}"/>
-                                    <views:CurveBar ValueCount="3" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="3" DataContext="{Binding ActiveDeckViewModel}"/>
-                                    <views:CurveBar ValueCount="4" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="4" DataContext="{Binding ActiveDeckViewModel}"/>
-                                    <views:CurveBar ValueCount="5" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="5" DataContext="{Binding ActiveDeckViewModel}"/>
-                                    <views:CurveBar ValueCount="6" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="6" DataContext="{Binding ActiveDeckViewModel}"/>
-                                    <views:CurveBar ValueCount="7" MaxCount="{Binding ActiveDeckViewModel.MaxCmcCount}" Title="7+" DataContext="{Binding ActiveDeckViewModel}"/>
-                                </UniformGrid>
-                                <UniformGrid Grid.Row="1" Columns="8" Margin="0,4,0,0">
-                                    <TextBlock Text="0" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="1" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="2" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="3" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="4" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="5" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="6" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="7+" FontSize="8" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center"/>
-                                </UniformGrid>
-                            </Grid>
-
-                            <Separator Background="#20222a" Margin="0,0,0,16"/>
-
-                            <!-- 3. COLOR IDENTITY -->
-                            <TextBlock Text="Color Identity" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,8"/>
-                            <Grid Width="90" Height="90" HorizontalAlignment="Center" Margin="0,0,0,20">
-                                <Ellipse Stroke="#1c1d24" StrokeThickness="8" Width="80" Height="80"/>
-                                <Grid>
-                                    <TextBlock Text="{Binding ActiveDeckViewModel.ColorIdentityText}" FontSize="10" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    
-                                    <!-- White (W) -->
-                                    <Ellipse Fill="#f0f2c5" Width="14" Height="14" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,4,0,0">
-                                        <Ellipse.Style>
-                                            <Style TargetType="Ellipse">
-                                                <Setter Property="Opacity" Value="0.15"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ActiveDeckViewModel.HasWhite}" Value="True">
-                                                        <Setter Property="Opacity" Value="1.0"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Ellipse.Style>
-                                    </Ellipse>
-                                    
-                                    <!-- Blue (U) -->
-                                    <Ellipse Fill="#3498db" Width="14" Height="14" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,4,0">
-                                        <Ellipse.Style>
-                                            <Style TargetType="Ellipse">
-                                                <Setter Property="Opacity" Value="0.15"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ActiveDeckViewModel.HasBlue}" Value="True">
-                                                        <Setter Property="Opacity" Value="1.0"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Ellipse.Style>
-                                    </Ellipse>
-                                    
-                                    <!-- Black (B) -->
-                                    <Ellipse Fill="#121212" Stroke="#333" StrokeThickness="1" Width="14" Height="14" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,18,6">
-                                        <Ellipse.Style>
-                                            <Style TargetType="Ellipse">
-                                                <Setter Property="Opacity" Value="0.15"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ActiveDeckViewModel.HasBlack}" Value="True">
-                                                        <Setter Property="Opacity" Value="1.0"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Ellipse.Style>
-                                    </Ellipse>
-                                    
-                                    <!-- Red (R) -->
-                                    <Ellipse Fill="#e74c3c" Width="14" Height="14" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="18,0,0,6">
-                                        <Ellipse.Style>
-                                            <Style TargetType="Ellipse">
-                                                <Setter Property="Opacity" Value="0.15"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ActiveDeckViewModel.HasRed}" Value="True">
-                                                        <Setter Property="Opacity" Value="1.0"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Ellipse.Style>
-                                    </Ellipse>
-                                    
-                                    <!-- Green (G) -->
-                                    <Ellipse Fill="#2ecc71" Width="14" Height="14" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4,0,0,0">
-                                        <Ellipse.Style>
-                                            <Style TargetType="Ellipse">
-                                                <Setter Property="Opacity" Value="0.15"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ActiveDeckViewModel.HasGreen}" Value="True">
-                                                        <Setter Property="Opacity" Value="1.0"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Ellipse.Style>
-                                    </Ellipse>
-                                </Grid>
-                            </Grid>
-
-                            <Separator Background="#20222a" Margin="0,0,0,16"/>
-
-                            <!-- 4. GOALS STATUS TRACKER -->
-                            <TextBlock Text="Goal Status Tracker" FontSize="10" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,8"/>
-                            <StackPanel Margin="0,0,0,10">
-                                <!-- Lands Goal Tracker -->
-                                <StackPanel Margin="0,2">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Lands" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.LandsCount, StringFormat='{}{0}'}" Foreground="White" FontSize="11"/>
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.LandsGoal, StringFormat='/ {0}'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,0"/>
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.LandsStatus, StringFormat=' ({0})'}" Foreground="{Binding ActiveDeckViewModel.LandsStatusBrush}" FontSize="11" FontWeight="Bold" Margin="4,0,0,0"/>
-                                        </StackPanel>
-                                    </Grid>
-                                    <ProgressBar Value="{Binding ActiveDeckViewModel.LandsCount, Mode=OneWay}" Maximum="{Binding ActiveDeckViewModel.LandsGoal}" Height="4" Foreground="{Binding ActiveDeckViewModel.LandsStatusBrush}" Background="#1c1d24" BorderThickness="0" Margin="0,4,0,6"/>
-                                </StackPanel>
-
-                                <!-- Ramp Goal Tracker -->
-                                <StackPanel Margin="0,2">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Ramp" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.RampCount, StringFormat='{}{0}'}" Foreground="White" FontSize="11"/>
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.RampGoal, StringFormat='/ {0}'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,0"/>
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.RampStatus, StringFormat=' ({0})'}" Foreground="{Binding ActiveDeckViewModel.RampStatusBrush}" FontSize="11" FontWeight="Bold" Margin="4,0,0,0"/>
-                                        </StackPanel>
-                                    </Grid>
-                                    <ProgressBar Value="{Binding ActiveDeckViewModel.RampCount, Mode=OneWay}" Maximum="{Binding ActiveDeckViewModel.RampGoal}" Height="4" Foreground="{Binding ActiveDeckViewModel.RampStatusBrush}" Background="#1c1d24" BorderThickness="0" Margin="0,4,0,6"/>
-                                </StackPanel>
-
-                                <!-- Card Draw Goal Tracker -->
-                                <StackPanel Margin="0,2">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Card Draw" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.DrawCount, StringFormat='{}{0}'}" Foreground="White" FontSize="11"/>
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.DrawGoal, StringFormat='/ {0}'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,0"/>
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.DrawStatus, StringFormat=' ({0})'}" Foreground="{Binding ActiveDeckViewModel.DrawStatusBrush}" FontSize="11" FontWeight="Bold" Margin="4,0,0,0"/>
-                                        </StackPanel>
-                                    </Grid>
-                                    <ProgressBar Value="{Binding ActiveDeckViewModel.DrawCount, Mode=OneWay}" Maximum="{Binding ActiveDeckViewModel.DrawGoal}" Height="4" Foreground="{Binding ActiveDeckViewModel.DrawStatusBrush}" Background="#1c1d24" BorderThickness="0" Margin="0,4,0,6"/>
-                                </StackPanel>
-
-                                <!-- Spot Removal Goal Tracker -->
-                                <StackPanel Margin="0,2">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Removal" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.RemovalCount, StringFormat='{}{0}'}" Foreground="White" FontSize="11"/>
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.RemovalGoal, StringFormat='/ {0}'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,0"/>
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.RemovalStatus, StringFormat=' ({0})'}" Foreground="{Binding ActiveDeckViewModel.RemovalStatusBrush}" FontSize="11" FontWeight="Bold" Margin="4,0,0,0"/>
-                                        </StackPanel>
-                                    </Grid>
-                                    <ProgressBar Value="{Binding ActiveDeckViewModel.RemovalCount, Mode=OneWay}" Maximum="{Binding ActiveDeckViewModel.RemovalGoal}" Height="4" Foreground="{Binding ActiveDeckViewModel.RemovalStatusBrush}" Background="#1c1d24" BorderThickness="0" Margin="0,4,0,6"/>
-                                </StackPanel>
-
-                                <!-- Board Wipes Goal Tracker -->
-                                <StackPanel Margin="0,2">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Board Wipes" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.WipeCount, StringFormat='{}{0}'}" Foreground="White" FontSize="11"/>
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.WipeGoal, StringFormat='/ {0}'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,0"/>
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.WipeStatus, StringFormat=' ({0})'}" Foreground="{Binding ActiveDeckViewModel.WipeStatusBrush}" FontSize="11" FontWeight="Bold" Margin="4,0,0,0"/>
-                                        </StackPanel>
-                                    </Grid>
-                                    <ProgressBar Value="{Binding ActiveDeckViewModel.WipeCount, Mode=OneWay}" Maximum="{Binding ActiveDeckViewModel.WipeGoal}" Height="4" Foreground="{Binding ActiveDeckViewModel.WipeStatusBrush}" Background="#1c1d24" BorderThickness="0" Margin="0,4,0,6"/>
-                                </StackPanel>
-
-                                <!-- Tutors Goal Tracker -->
-                                <StackPanel Margin="0,2">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Tutors" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.TutorsCount, StringFormat='{}{0}'}" Foreground="White" FontSize="11"/>
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.TutorGoal, StringFormat='/ {0}'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,0"/>
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.TutorStatus, StringFormat=' ({0})'}" Foreground="{Binding ActiveDeckViewModel.TutorStatusBrush}" FontSize="11" FontWeight="Bold" Margin="4,0,0,0"/>
-                                        </StackPanel>
-                                    </Grid>
-                                    <ProgressBar Value="{Binding ActiveDeckViewModel.TutorsCount, Mode=OneWay}" Maximum="{Binding ActiveDeckViewModel.TutorGoal}" Height="4" Foreground="{Binding ActiveDeckViewModel.TutorStatusBrush}" Background="#1c1d24" BorderThickness="0" Margin="0,4,0,6"/>
-                                </StackPanel>
-
-                                <!-- Win Conditions Goal Tracker -->
-                                <StackPanel Margin="0,2">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Win Conditions" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.WinConditionsCount, StringFormat='{}{0}'}" Foreground="White" FontSize="11"/>
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.WinConditionGoal, StringFormat='/ {0}'}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,0"/>
-                                            <TextBlock Text="{Binding ActiveDeckViewModel.WinConditionStatus, StringFormat=' ({0})'}" Foreground="{Binding ActiveDeckViewModel.WinConditionStatusBrush}" FontSize="11" FontWeight="Bold" Margin="4,0,0,0"/>
-                                        </StackPanel>
-                                    </Grid>
-                                    <ProgressBar Value="{Binding ActiveDeckViewModel.WinConditionsCount, Mode=OneWay}" Maximum="{Binding ActiveDeckViewModel.WinConditionGoal}" Height="4" Foreground="{Binding ActiveDeckViewModel.WinConditionStatusBrush}" Background="#1c1d24" BorderThickness="0" Margin="0,4,0,6"/>
-                                </StackPanel>
-                            </StackPanel>
-
-                            <Button Content="Suggestions" HorizontalAlignment="Stretch" Padding="10" Background="#1c1d24" BorderBrush="#2c2e3c" Foreground="White" Click="OpenRecommendations_Click"/>
-                        </StackPanel>
-                    </ScrollViewer>
-                </Grid>
-            </Border>
-
-            </Grid>
+                        </Grid>
                     </TabItem>
 
                     <!-- TAB 2: LIST VIEW -->
@@ -1658,7 +1788,7 @@
 
                     <!-- TAB 3: ANALYTICS -->
                     <TabItem Header="Analytics" Selector.Selected="AnalyticsTab_Selected">
-                        <views:AnalyticsView x:Name="DeckAnalyticsPanel"/>
+                        <views:AnalyticsView x:Name="DeckAnalyticsPanel" DataContext="{Binding ActiveDeckViewModel}"/>
                     </TabItem>
                 </TabControl>
 

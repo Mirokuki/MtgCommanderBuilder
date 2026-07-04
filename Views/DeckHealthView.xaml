@@ -36,17 +36,17 @@
 
                     <Grid Grid.Row="1" Width="140" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Ellipse Stroke="#1c1d24" StrokeThickness="10" Width="130" Height="130"/>
-                        <!-- 91% Excellent Health Ring -->
-                        <Ellipse Stroke="#2ecc71" StrokeThickness="10" 
-                                 StrokeDashArray="37.16, 3.68" 
+                        <!-- Dynamic Health Ring -->
+                        <Ellipse Stroke="{Binding GoalsHealthColor}" StrokeThickness="10" 
+                                 StrokeDashArray="{Binding GoalsCompletionPercentage, Converter={StaticResource PercentToDashConverter}}" 
                                  Width="130" Height="130" RenderTransformOrigin="0.5,0.5">
                             <Ellipse.RenderTransform>
                                 <RotateTransform Angle="-90"/>
                             </Ellipse.RenderTransform>
                         </Ellipse>
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <TextBlock Text="91%" FontSize="32" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Excellent" FontSize="10" FontWeight="SemiBold" Foreground="#2ecc71" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                            <TextBlock Text="{Binding GoalsCompletionPercentage, StringFormat='{}{0}%'}" FontSize="32" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding GoalsHealthRating}" FontSize="10" FontWeight="SemiBold" Foreground="{Binding GoalsHealthColor}" HorizontalAlignment="Center" Margin="0,2,0,0"/>
                         </StackPanel>
                     </Grid>
                 </Grid>
@@ -65,38 +65,78 @@
                     <StackPanel Grid.Row="1" VerticalAlignment="Center">
                         <!-- Lands -->
                         <Grid Margin="0,4">
-                            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                            <Ellipse Grid.Column="0" Width="8" Height="8" Fill="#2ecc71" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Grid.Column="0" Width="8" Height="8" Fill="{Binding LandsStatusBrush}" Margin="0,0,10,0" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="1" Text="Lands" Foreground="White" FontSize="12"/>
-                            <TextBlock Grid.Column="2" Text="27 / 27" Foreground="{StaticResource TextMutedBrush}" FontSize="12" FontWeight="Bold"/>
+                            <TextBlock Grid.Column="2" Foreground="{StaticResource TextMutedBrush}" FontSize="12" FontWeight="Bold" VerticalAlignment="Center">
+                                <Run Text="{Binding LandsCount, Mode=OneWay}"/>
+                                <Run Text=" / "/>
+                                <Run Text="{Binding LandsGoal, Mode=OneWay}"/>
+                            </TextBlock>
                         </Grid>
                         <!-- Ramp -->
                         <Grid Margin="0,4">
-                            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                            <Ellipse Grid.Column="0" Width="8" Height="8" Fill="#2ecc71" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Grid.Column="0" Width="8" Height="8" Fill="{Binding RampStatusBrush}" Margin="0,0,10,0" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="1" Text="Ramp" Foreground="White" FontSize="12"/>
-                            <TextBlock Grid.Column="2" Text="18 / 16-30" Foreground="{StaticResource TextMutedBrush}" FontSize="12" FontWeight="Bold"/>
+                            <TextBlock Grid.Column="2" Foreground="{StaticResource TextMutedBrush}" FontSize="12" FontWeight="Bold" VerticalAlignment="Center">
+                                <Run Text="{Binding RampCount, Mode=OneWay}"/>
+                                <Run Text=" / "/>
+                                <Run Text="{Binding RampGoal, Mode=OneWay}"/>
+                            </TextBlock>
                         </Grid>
                         <!-- Draw -->
                         <Grid Margin="0,4">
-                            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                            <Ellipse Grid.Column="0" Width="8" Height="8" Fill="#2ecc71" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Grid.Column="0" Width="8" Height="8" Fill="{Binding DrawStatusBrush}" Margin="0,0,10,0" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="1" Text="Draw" Foreground="White" FontSize="12"/>
-                            <TextBlock Grid.Column="2" Text="24 / 20-28" Foreground="{StaticResource TextMutedBrush}" FontSize="12" FontWeight="Bold"/>
+                            <TextBlock Grid.Column="2" Foreground="{StaticResource TextMutedBrush}" FontSize="12" FontWeight="Bold" VerticalAlignment="Center">
+                                <Run Text="{Binding DrawCount, Mode=OneWay}"/>
+                                <Run Text=" / "/>
+                                <Run Text="{Binding DrawGoal, Mode=OneWay}"/>
+                            </TextBlock>
                         </Grid>
                         <!-- Removal -->
                         <Grid Margin="0,4">
-                            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                            <Ellipse Grid.Column="0" Width="8" Height="8" Fill="#e67e22" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Grid.Column="0" Width="8" Height="8" Fill="{Binding RemovalStatusBrush}" Margin="0,0,10,0" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="1" Text="Removal" Foreground="White" FontSize="12"/>
-                            <TextBlock Grid.Column="2" Text="22 / 24-34" Foreground="{StaticResource TextMutedBrush}" FontSize="12" FontWeight="Bold"/>
+                            <TextBlock Grid.Column="2" Foreground="{StaticResource TextMutedBrush}" FontSize="12" FontWeight="Bold" VerticalAlignment="Center">
+                                <Run Text="{Binding RemovalCount, Mode=OneWay}"/>
+                                <Run Text=" / "/>
+                                <Run Text="{Binding RemovalGoal, Mode=OneWay}"/>
+                            </TextBlock>
                         </Grid>
                         <!-- Wipes -->
                         <Grid Margin="0,4">
-                            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                            <Ellipse Grid.Column="0" Width="8" Height="8" Fill="#2ecc71" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Grid.Column="0" Width="8" Height="8" Fill="{Binding WipeStatusBrush}" Margin="0,0,10,0" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="1" Text="Board Wipes" Foreground="White" FontSize="12"/>
-                            <TextBlock Grid.Column="2" Text="12 / 10-18" Foreground="{StaticResource TextMutedBrush}" FontSize="12" FontWeight="Bold"/>
+                            <TextBlock Grid.Column="2" Foreground="{StaticResource TextMutedBrush}" FontSize="12" FontWeight="Bold" VerticalAlignment="Center">
+                                <Run Text="{Binding WipeCount, Mode=OneWay}"/>
+                                <Run Text=" / "/>
+                                <Run Text="{Binding WipeGoal, Mode=OneWay}"/>
+                            </TextBlock>
                         </Grid>
                     </StackPanel>
                 </Grid>
@@ -117,8 +157,8 @@
                         <Polygon Points="65,10 115,45 95,110 35,110 15,45" Stroke="#20222a" StrokeThickness="1" Fill="Transparent"/>
                         <Polygon Points="65,30 95,50 85,90 45,90 35,50" Stroke="#20222a" StrokeThickness="1" Fill="Transparent"/>
 
-                        <!-- Actual Strategy Polygon (Midrange/Control focus) -->
-                        <Polygon Points="65,15 105,48 85,92 48,105 28,48" Stroke="#5c2bb0" StrokeThickness="2" Fill="#405c2bb0"/>
+                        <!-- Actual Strategy Polygon (Dynamic) -->
+                        <Polygon Points="{Binding StrategyPointsString}" Stroke="#5c2bb0" StrokeThickness="2" Fill="#405c2bb0"/>
 
                         <!-- Labels -->
                         <TextBlock Text="CTRL" FontSize="8" Foreground="{StaticResource TextMutedBrush}" FontWeight="Bold" Margin="0,-2,0,0" HorizontalAlignment="Center" VerticalAlignment="Top"/>
@@ -142,29 +182,42 @@
 
                     <!-- Smooth line chart -->
                     <Grid Grid.Row="1">
-                        <!-- Y-Axis markings -->
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <StackPanel Grid.Column="0" VerticalAlignment="Stretch" Margin="0,0,12,0" Height="100">
-                            <TextBlock Text="1.0" FontSize="8" Foreground="{StaticResource TextMutedBrush}"/>
-                            <TextBlock Text="0.5" FontSize="8" Foreground="{StaticResource TextMutedBrush}" Margin="0,34,0,0"/>
-                            <TextBlock Text="0.0" FontSize="8" Foreground="{StaticResource TextMutedBrush}" Margin="0,34,0,0"/>
+                        <StackPanel Grid.Column="0" VerticalAlignment="Top" Margin="0,8,12,0" Height="100">
+                            <TextBlock Text="Max" FontSize="8" Foreground="{StaticResource TextMutedBrush}"/>
+                            <TextBlock Text="Mid" FontSize="8" Foreground="{StaticResource TextMutedBrush}" Margin="0,34,0,0"/>
+                            <TextBlock Text="Min" FontSize="8" Foreground="{StaticResource TextMutedBrush}" Margin="0,34,0,0"/>
                         </StackPanel>
 
-                        <!-- Vector line graph path -->
-                        <Grid Grid.Column="1" Height="100" VerticalAlignment="Center">
-                            <!-- Background horizontal grid lines -->
-                            <Separator VerticalAlignment="Top" Background="#1a1b22" Margin="0,2,0,0"/>
-                            <Separator VerticalAlignment="Center" Background="#1a1b22"/>
-                            <Separator VerticalAlignment="Bottom" Background="#1a1b22" Margin="0,0,0,2"/>
+                        <StackPanel Grid.Column="1">
+                            <!-- Vector line graph path -->
+                            <Grid Height="100" Width="300" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                <!-- Background horizontal grid lines -->
+                                <Separator VerticalAlignment="Top" Background="#1a1b22" Margin="0,2,0,0"/>
+                                <Separator VerticalAlignment="Center" Background="#1a1b22"/>
+                                <Separator VerticalAlignment="Bottom" Background="#1a1b22" Margin="0,0,0,2"/>
 
-                            <!-- Line Path -->
-                            <Polyline Points="10,80 50,60 90,25 130,40 170,72 210,88 250,92 290,95" Stroke="#3498db" StrokeThickness="2.5"/>
-                            <Polyline Points="10,80 50,60 90,25 130,40 170,72 210,88 250,92 290,95 290,100 10,100" Fill="#153498db"/>
-                        </Grid>
+                                <!-- Dynamic Line Path -->
+                                <Polyline Points="{Binding CurvePointsString}" Stroke="#3498db" StrokeThickness="2.5"/>
+                                <Polyline Points="{Binding CurveFillPointsString}" Fill="#153498db"/>
+                            </Grid>
+                            
+                            <!-- X-Axis Labels -->
+                            <UniformGrid Columns="8" Rows="1" Width="280" HorizontalAlignment="Left" Margin="10,6,0,0">
+                                <TextBlock Text="0" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="9"/>
+                                <TextBlock Text="1" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="9"/>
+                                <TextBlock Text="2" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="9"/>
+                                <TextBlock Text="3" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="9"/>
+                                <TextBlock Text="4" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="9"/>
+                                <TextBlock Text="5" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="9"/>
+                                <TextBlock Text="6" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="9"/>
+                                <TextBlock Text="7+" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Center" FontSize="9"/>
+                            </UniformGrid>
+                        </StackPanel>
                     </Grid>
                 </Grid>
             </Border>

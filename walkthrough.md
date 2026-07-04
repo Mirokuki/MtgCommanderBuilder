@@ -288,3 +288,88 @@ Fixed the issues where the Deck Wizard could not be completed and the card zoom 
    - Implemented 7 distinct setup views linked to visibility properties (`Step1Active` through `Step7Active`) inside [MainWindow.xaml](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/MainWindow.xaml).
    - Added a progress header with a `ProgressBar` displaying the current step.
    - Added Back, Continue, and Generate Deck buttons at the bottom that dynamically hide and show depending on the wizard's step progress.
+
+
+## 🔍 Header Card Zoom & Sidebar Rename Cleanup
+
+Moved card zoom settings to the main viewport header panel and verified layout transforms:
+1. **Global Viewport Header Zoom**:
+   - Added the Card Zoom slider to the main `Deck Header Panel` inside [MainWindow.xaml](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/MainWindow.xaml). Since this header panel is placed at the top level of the active deck workspace, the slider is visible and functional across all tabs (both Tab 1 `Deck View` and Tab 2 `List View`).
+   - Removed the zoom sliders from the individual tabs to clean up duplicate controls.
+2. **UserControl-Level Scaling**:
+   - Moved the `LayoutTransform` from the root `Border` of the card view to the `UserControl` itself inside [Views/CardItemView.xaml](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/Views/CardItemView.xaml).
+   - This scales the entire `CardItemView` element boundary, allowing the parent `WrapPanel` layout engine to measure and arrange the scaled card items correctly during runtime.
+3. **Sidebar Read-Only Name**:
+   - Confirmed the textbox in the sidebar is replaced with a read-only `TextBlock` displaying the active deck name, leaving the rename edit icon button as the sole interface for triggering the rename dialog.
+
+
+## 🧹 Active Deck Sidebar Header Simplification
+
+Cleaned up redundant headers and selector dropdowns from the active deck sidebar:
+1. **Removed Redundant Controls**:
+   - Removed the `SELECT DECK` combobox section from the active deck card list sidebar inside [MainWindow.xaml](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/MainWindow.xaml). Switching decks remains fully accessible from the far-left saved decks panel.
+   - Removed the redundant `DECK NAME` title, textblock, and rename edit pencil button from the sidebar header. The active deck name, cards count, and rename pencil button are already displayed in the main viewport header at the top of the program.
+2. **Simplified Layout Grid**:
+   - Reduced the sidebar header `Grid.RowDefinitions` down to two rows (`Auto` for controls, `*` for card lists).
+   - Moved the `GROUP BY` and `SORT BY` controls grid directly to the top row (`Grid.Row="0"`), optimizing the sidebar's screen real estate to show more cards.
+
+
+## 📊 Analytics & Health Dashboard Binding and Layout Fixes
+
+Resolved layout and data rendering issues in the analytics tabs and views:
+1. **Dynamic Dashboard Bindings in DeckHealthView**:
+   - Replaced all hardcoded values with actual property bindings to the active deck's data in [Views/DeckHealthView.xaml](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/Views/DeckHealthView.xaml).
+   - The health gauge progress ring color and text scale dynamically based on the goals completed (`GoalsCompletionPercentage`, `GoalsHealthRating`, and `GoalsHealthColor`).
+   - The category checklist items (Lands, Ramp, Draw, Removal, Wipes) now dynamically display active counts against goals (`LandsCount / LandsGoal`, etc.) and color-code status indicators using the corresponding VM status brushes.
+2. **Dynamic Chart Vector Strings**:
+   - Wired the strategy profile radar chart polygon points to bind to `StrategyPointsString`, which dynamically calculates 5 normalized coordinate points based on the active deck's actual category counts.
+   - Bound the curve consistency line graph path and fill points to `CurvePointsString` and `CurveFillPointsString`.
+3. **Line Graph Layout and X-Axis Markings**:
+   - Fixed the line graph layout rendering issue by sizing and aligning the polyline container (`Width="300" HorizontalAlignment="Left"`) so the coordinates map correctly.
+   - Replaced hardcoded y-axis values with `Max` / `Mid` / `Min` labels and added a fully aligned horizontal grid of X-axis labels for CMC values `0` through `7+`.
+4. **Analytics Tab DataContext Bug Fix**:
+   - Set the `DataContext` of `DeckAnalyticsPanel` (Tab 3 `Analytics`) explicitly to `ActiveDeckViewModel` in [MainWindow.xaml](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/MainWindow.xaml).
+   - Set all target progress bars in `AnalyticsView.xaml` to `Mode=OneWay` to prevent WPF runtime binding failures on read-only deck size and count properties.
+
+
+## 🔍 Search Panel Column & Sidebar Toggle Fixes
+
+Resolved the issue where search results were squished and invisible:
+1. **Column Alignment Correction**:
+   - Restored the active deck card list sidebar (`LeftActiveDeckBorder`) to Column 0 (with a fixed width of `320` in [MainWindow.xaml](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/MainWindow.xaml)).
+   - Restored the main search engine grid (`LeftSearchPanelGrid`) to Column 1 (which spans `Width="*"`, the central workspace). This gives the search engine full screen space to display both the card results grid and the card inspector panel without layout squishing.
+2. **Left Sidebar Visibility Target Update**:
+   - Updated the `SetLeftSidebarVisibility` method in [MainWindow.xaml.cs](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/MainWindow.xaml.cs) to target the active deck list sidebar (`LeftActiveDeckBorder`) instead of the search panel grid. Now, toggling the "DECKLIST" button correctly collapses the deck list sidebar, and the center search panel automatically expands to take over the newly freed screen space.
+
+
+## 🔍 Dedicated "Card Search" Workspace Tab
+
+Redesigned the workspace layouts to create a clean, dedicated card search tab per user request:
+1. **New Tab Creation**:
+   - Created **Tab 2: Card Search** (Header="Card Search" in [MainWindow.xaml](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/MainWindow.xaml)).
+   - Moved the search engine (`LeftSearchPanelGrid`, containing search rules, result sub-tabs, and inspector panel) from Tab 1 into the center workspace of Tab 2 (`Width="*"`, Column 1).
+   - Placed a copy of the collapsible Active Deck Sidebar (`LeftActiveDeckBorder`) in Column 0 (`Width="320"`) of Tab 2, so the user can easily see their deck's cards and quantities while searching and adding new cards.
+2. **Tab 1: Deck View Board Facelift**:
+   - Tab 1 is now exclusively dedicated to viewing and inspecting the active deck.
+   - The active deck board is displayed in Column 0, spanning the full center space (`Width="*"`) instead of being cramped in a 320px sidebar. This lets card groups flow in a beautiful multi-column tabletop layout.
+   - The collapsible Live Analysis panel (`RightStatsBorder`) is placed in Column 1 (`Width="340"`).
+3. **Sidebar Collapse Toggles Integration**:
+   - Kept the sidebar controls globally unified in [MainWindow.xaml.cs](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/MainWindow.xaml.cs):
+     - Toggling "DECKLIST" collapses/expands the left Active Deck Sidebar inside Tab 2.
+     - Toggling "COMMANDER/STATS" collapses/expands the right Live Analysis sidebar in Tab 1 AND the right Card Inspector panel inside Tab 2.
+4. **Card Double-Click & Inspection Navigation**:
+   - Programmed the card selection and double-click methods (such as `SelectCardInInspector`) to automatically switch `MainTabControl.SelectedIndex = 1` if invoked from another tab. Double-clicking any card from the deck board on Tab 1 or the spreadsheet list on Tab 3 now takes the user directly to the Card Search tab with the inspector loaded.
+
+
+## 📋 Compact Sidebar Deck List inside Card Search Tab
+
+Replaced the grouped card view on the left sidebar of the Card Search tab with a clean, compact tabular List View:
+1. **Compact Template Design**:
+   - Each row is rendered using a streamlined, horizontal template:
+     - Left: Quantity badge (e.g. `1x` in gold text with a rounded border background).
+     - Center: Card Name (bold white text) and Card Type (smaller, muted gray text) vertically stacked.
+     - Right: Card Mana Value (CMC) inside a small circular dark badge.
+   - Fits perfectly in the narrow 320px sidebar without layout crowding, displaying more than 15 cards at a glance.
+2. **Tab-Specific Card Filter Box**:
+   - Added a `TxtSearchTabDeckFilter` TextBox to filter the cards in the sidebar list in real time.
+   - Programmed the `TxtSearchTabDeckFilter_TextChanged` event handler in [MainWindow.xaml.cs](file:///c:/Users/rsuff/OneDrive/Documents/MtgCommanderBuilder-Wild/MainWindow.xaml.cs) to dynamically search card names and types in the active deck collection.

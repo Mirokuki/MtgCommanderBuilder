@@ -10,15 +10,16 @@
              MouseLeave="UserControl_MouseLeave"
              MouseLeftButtonDown="UserControl_MouseLeftButtonDown">
 
+    <UserControl.LayoutTransform>
+        <ScaleTransform ScaleX="{Binding DataContext.CardZoomScale, RelativeSource={RelativeSource AncestorType=Window}, FallbackValue=1.0}" 
+                        ScaleY="{Binding DataContext.CardZoomScale, RelativeSource={RelativeSource AncestorType=Window}, FallbackValue=1.0}"/>
+    </UserControl.LayoutTransform>
+
     <UserControl.Resources>
         <SolidColorBrush x:Key="AccentGoldBrush" Color="#caa13e"/>
     </UserControl.Resources>
 
     <Border Name="CardBorder" CornerRadius="8" Background="#121319" BorderThickness="1" BorderBrush="#2c2e3c" Margin="4" Padding="1" ClipToBounds="True" Width="122" Height="170" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Border.LayoutTransform>
-            <ScaleTransform ScaleX="{Binding DataContext.CardZoomScale, RelativeSource={RelativeSource AncestorType=Window}, FallbackValue=1.0}" 
-                            ScaleY="{Binding DataContext.CardZoomScale, RelativeSource={RelativeSource AncestorType=Window}, FallbackValue=1.0}"/>
-        </Border.LayoutTransform>
         <Border.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="Add copy (+1)" Click="Add_Click"/>

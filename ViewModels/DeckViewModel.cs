@@ -326,6 +326,7 @@ namespace MtgCommanderBuilder.ViewModels
             OnPropertyChanged(nameof(TutorStatusBrush));
             OnPropertyChanged(nameof(WinConditionStatus));
             OnPropertyChanged(nameof(WinConditionStatusBrush));
+            NotifyAnalyticsChanges();
         }
 
         // --- GOAL STATUS AND COLOR PROPERTIES (For Sidebar Goal Tracker) ---
@@ -399,6 +400,88 @@ namespace MtgCommanderBuilder.ViewModels
             OnPropertyChanged(nameof(HasRed));
             OnPropertyChanged(nameof(HasGreen));
             OnPropertyChanged(nameof(ColorIdentityText));
+        }
+
+        // --- DECK HEALTH & GRAPH PROPERTIES ---
+        public string GoalsHealthRating
+        {
+            get
+            {
+                int pct = GoalsCompletionPercentage;
+                if (pct >= 90) return "Excellent";
+                if (pct >= 70) return "Good";
+                if (pct >= 50) return "Fair";
+                return "Needs Work";
+            }
+        }
+
+        public string GoalsHealthColor
+        {
+            get
+            {
+                int pct = GoalsCompletionPercentage;
+                if (pct >= 90) return "#2ecc71"; // Green
+                if (pct >= 70) return "#3498db"; // Blue
+                if (pct >= 50) return "#f1c40f"; // Yellow
+                return "#e74c3c"; // Red
+            }
+        }
+
+        private int GetCmcCount(int cmcBucket)
+        {
+            var nonLands = Cards.Where(c => !c.IsLand);
+            int count = 0;
+            foreach (var card in nonLands)
+            {
+                int bucket = (int)Math.Floor(card.Cmc);
+                if (bucket < 0) bucket = 0;
+                if (bucket >= 7) bucket = 7;
+                if (bucket == cmcBucket)
+                {
+                    count += card.Quantity;
+                }
+            }
+            return count;
+        }
+
+        public string CurvePointsString
+        {
+            get
+            {
+                int maxCount = MaxCmcCount;
+                if (maxCount <= 0) maxCount = 1;
+                
+                var points = new List<string>();
+                for (int i = 0; i <= 7; i++)
+                {
+                    int x = 10 + i * 40;
+                    int count = GetCmcCount(i);
+                    double ratio = (double)count / maxCount;
+                    // Map y to range [95, 10]
+                    int y = (int)(95 - ratio * 85);
+                    points.Add($"{x},{y}");
+                }
+                return string.Join(" ", points);
+            }
+        }
+
+        public string CurveFillPointsString
+        {
+            get
+            {
+                string curve = CurvePointsString;
+                return $"10,100 {curve} 290,100";
+            }
+        }
+
+        public void NotifyAnalyticsChanges()
+        {
+            OnPropertyChanged(nameof(MaxCmcCount));
+            OnPropertyChanged(nameof(CurvePointsString));
+            OnPropertyChanged(nameof(CurveFillPointsString));
+            OnPropertyChanged(nameof(GoalsHealthRating));
+            OnPropertyChanged(nameof(GoalsHealthColor));
+            OnPropertyChanged(nameof(GoalsCompletionPercentage));
         }
 
         public int MaxCmcCount
